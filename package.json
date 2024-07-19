@@ -4,7 +4,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "server": "nodemon backend/index.js",
+    "server": "nodemon --env-file=.env backend/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
