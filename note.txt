@@ -1,0 +1,131 @@
+CLASS 33-project11-setup
+-------------------------
+git init
+npm init
+npm i express 
+npm i mongoose
+npm i -D nodemon
+"server": "nodemon backend/index.js"
+
+>backend
+ index.js
+ app.js
+ config >db.js
+ controller 
+ middleware 
+ models 
+ routes
+ utils
+
+"type": "module"
+
+config > db.js > import mongoose from "mongoose"
+                 await mongoose.connect("mongodb://localhost:27017/Batch22) ==> E
+
+app.js > import express from "express"
+         const app = express() ==> E
+
+index.js > import {app} from "./app.js"
+           import connectDB from "./config/db.js"
+           connectDB()
+            .then(() => app.listen());
+
+.env > MONGODB_URI=mongodb://localhost:27017/Batch22
+package.json > "server": "nodemon --env-file=.env backend/index.js"
+db.js > process.env.MONGODB_URI
+
+.env > PORT=5100
+index.js > const PORT = process.env.PORT || 8000;
+
+.env.sample > MONGODB_URI="YOUR MONGODB URI"
+              PORT="YOUR PORT"
+
+
+CLASS 34-Authentication  
+-------------------------
+Authentication means store the valid or genuine user data and get their data
+
+models > user.model.js > import mongoose from "mongoose"
+                         userSchema = new mongoose.Schema({name, email, password, isAdmin}, {timestamps: true})
+                         User = mongoose.model("User", userSchema) ==> E
+
+controller > user.controller.js > import User from "../models/user.model.js"
+                                  signup > arrow function with parameter(req, res)
+                                           async await try catch
+                                           await User.findOne({email})
+                                           await User.create({})
+                                           ==> E
+
+routes > user.router.js > import express from "express"
+                          import signup from "../controller/user.controller.js"
+                          const router = express.Router()
+                          router.post("/signup", signup)
+                          router ==> E
+
+aap.js > import userRouter from "./routes/user.router.js
+         app.use("/api/v1/users", userRourer)
+         app.use(express.json())
+
+postman > post http://localhost:5100/api/v1/users/signup send
+
+
+CLASS 27-Middleware logger
+-------------------------
+middleware => pices of code or function after req and before res 
+app.use(express.json()) is middleware
+
+middleware > logger.js > create function with parameter(req, res, next) ==> E
+             app.js > globally = app.use(logger)
+                    > locally = app.use("/", logger, userRourer)
+
+logger.js > req.method req.url res.statusCode req.originalUrl
+            start = Date.now()
+            end = Date.now()
+            npm i colors
+            import colors from "colors"
+            console.log("hello world"["colorName"])
+            fs.appendFile("fileName", "text materails", () => console.log("file is append into fileName))
+
+
+CLASS 28-Middleware errorMiddleware and notFoundErrorHandlerMiddleware
+logger.js > req.ip 
+
+Project > public folder
+public > 1.svg
+app.js > app.use(express.static("public"))
+
+middleware > errorMiddleware.js > const errorHandler = (error, req, res, next) => {
+       res.send({error: error.message});
+} ==> E 
+
+app.js > app.use(errorHandler);
+
+errorMiddleware.js > errorStatus = error.status || 500
+                     errorMessage = error.message || "Internal Server Error"
+
+next is neccessary in function parameter
+
+middleware > notFoundErrorHandlerMiddleware.js > (req, res, next) => {
+       let err = new Error(``);
+       err.status = 404;
+       next(err); 
+} ==> E 
+
+app.js > app.use(notFoundErrorHandlerMiddleware) :: this refer the error to errorHandler
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+
+ 
