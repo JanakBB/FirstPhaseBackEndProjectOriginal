@@ -7,7 +7,7 @@ const signup = async(req, res, next) => {
         if(userexists){
             let err = new Error(`User with email ${email} already exists!`)
             err.status = 400;
-            throw err;
+            next(err);
         }
     
         let newUser = await User.create({
