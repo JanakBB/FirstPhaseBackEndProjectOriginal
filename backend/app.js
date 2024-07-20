@@ -2,6 +2,8 @@ import express from "express";
 
 // router imports
 import userRouter from "./routes/user.router.js";
+
+// middleware imports
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/errorMiddleware.js";
 import notFoundErrorHandlerMiddleware from "./middleware/notFoundErrorHandlerMiddleware.js";
@@ -16,7 +18,7 @@ app.use(express.static("public"));
 // routes
 app.use("/api/v1/users", logger, userRouter);
 
-// errorHandler
+// errorHandler middleware
 app.use(notFoundErrorHandlerMiddleware);
 app.use(errorHandler);
 

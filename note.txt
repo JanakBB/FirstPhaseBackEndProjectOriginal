@@ -114,7 +114,32 @@ middleware > notFoundErrorHandlerMiddleware.js > (req, res, next) => {
 app.js > app.use(notFoundErrorHandlerMiddleware) :: this refer the error to errorHandler
 
 
+CLASS 35-bcrypt, login, jwt  
+-------------------
+npm i bcryptjs
+user.controller.js > import bcrypt from "bcryptjs"
+                     let salt = await bcrypt.genSalt(10);
+                     let hashedPassword = await bcrypt.hash(password, salt);
+                     password: hashedPassword,
 
+models > user.model.js > import bcrypt from "bcryptjs"
+                         userSchema.pre("save", async function(next){
+                            if(!this.isModified("password")){
+                                   next()
+                            }
+                            let salt = await bcrypt.genSalt(10);
+                            this.password = await bcrypt.hash(this.password, salt);
+                         })
+
+models > user.model.js > user.Schema.matchPassword = async function(password){
+       return await bcrypt.compare(password, this.password);
+}
+
+user.controller.js > if(await matchPassword(password))
+
+JWT > json web token
+      HEADER PAYLOAD VERIFY SIGNATURE
+                         
 
 
 

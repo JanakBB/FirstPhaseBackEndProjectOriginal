@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+// import bcrypt from "bcryptjs";
 
 const signup = async(req, res, next) => {
     try{
@@ -9,6 +10,9 @@ const signup = async(req, res, next) => {
             err.status = 400;
             next(err);
         }
+
+        // let salt = await bcrypt.genSalt(10);
+        // let hashedPassword = await bcrypt.hash(password, salt);
     
         let newUser = await User.create({
             name,
@@ -31,4 +35,27 @@ const signup = async(req, res, next) => {
     }
 }
 
-export {signup};
+const login = async(req, res, next) => {
+    try{
+        let {email, password} = req.body;
+        let user = await User.findOne({email});
+        if(!user){
+            let err = new Error(`${email} is not registered!`);
+            err.status = 400;
+            next(err);
+        }
+
+        if(await user.matchPassword(password)){
+            res.send({message: "Login successfully!"})
+        } else {
+            let err = new Error("Password is not matched");
+            err.status = 404;
+            next(err);
+        }
+    }
+    catch(err){
+        next(err);
+    }
+}
+
+export {signup, login};
