@@ -1,61 +1,62 @@
+import asyncHandler from "../middleware/asynchandler.middleware.js";
 import User from "../models/user.model.js";
+import createToken from "../utils/token.utils.js";
 // import bcrypt from "bcryptjs";
 
-const signup = async(req, res, next) => {
-    try{
-        let {name, email, password, isAdmin} = req.body;
-        let userexists = await User.findOne({email});
-        if(userexists){
-            let err = new Error(`User with email ${email} already exists!`)
-            err.status = 400;
-            next(err);
-        }
-
-        // let salt = await bcrypt.genSalt(10);
-        // let hashedPassword = await bcrypt.hash(password, salt);
-    
-        let newUser = await User.create({
-            name,
-            email,
-            password,
-            isAdmin
-        });
-        res.send({
-            message: "User registered successfully!",
-            user: {
-                _id: newUser._id,
-                name: newUser.name,
-                email: newUser.email,
-                isAdmin: newUser.isAdmin
-            }
-        })
-    }
-    catch(err){
+const signup = asyncHandler(async(req, res, next) => {
+    let {name, email, password, isAdmin} = req.body;
+    let userexists = await User.findOne({email});
+    if(userexists){
+        let err = new Error(`User with email ${email} already exists!`)
+        err.status = 400;
         next(err);
     }
-}
 
-const login = async(req, res, next) => {
-    try{
-        let {email, password} = req.body;
-        let user = await User.findOne({email});
-        if(!user){
-            let err = new Error(`${email} is not registered!`);
-            err.status = 400;
-            next(err);
-        }
+    // let salt = await bcrypt.genSalt(10);
+    // let hashedPassword = await bcrypt.hash(password, salt);
 
-        if(await user.matchPassword(password)){
-            res.send({message: "Login successfully!"})
-        } else {
-            let err = new Error("Password is not matched");
-            err.status = 404;
-            next(err);
+    let newUser = await User.create({
+        name,
+        email,
+        password,
+        isAdmin
+    });
+
+    createToken(res, newUser._id);
+
+    res.send({
+        message: "User registered successfully!",
+        user: {
+            _id: newUser._id,
+            name: newUser.name,
+            email: newUser.email,
+            isAdmin: newUser.isAdmin
         }
-    }
-    catch(err){
+    })
+})
+
+const login = asyncHandler(async(req, res, next) => {
+    let {email, password} = req.body;
+    let user = await User.findOne({email});
+    if(!user){
+        let err = new Error(`${email} is not registered!`);
+        err.status = 400;
         next(err);
     }
-}
 
-export {signup, login};
+    if(await user.matchPassword(password)){
+        createToken(res, user._id);
+        res.send({message: "Login successfully!"})
+    } else {
+        let err = new Error("Password is not matched");
+        err.status = 404;
+        next(err);
+    }
+})
+
+const logout = asyncHandler((req, res) => {
+    res.clearCookie("jwt");
+    res.send({message: "Logout Success!"})
+})
+
+export {signup, login, logout};

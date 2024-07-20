@@ -115,7 +115,7 @@ app.js > app.use(notFoundErrorHandlerMiddleware) :: this refer the error to erro
 
 
 CLASS 35-bcrypt, login, jwt  
--------------------
+--------------------------
 npm i bcryptjs
 user.controller.js > import bcrypt from "bcryptjs"
                      let salt = await bcrypt.genSalt(10);
@@ -139,6 +139,42 @@ user.controller.js > if(await matchPassword(password))
 
 JWT > json web token
       HEADER PAYLOAD VERIFY SIGNATURE
+
+
+CLASS 36-jwt, createToken, cookie, logout, asyncHandler  
+-------------------------------------------------------
+utils > token.utils.js > 
+        npm i jsonwebtoken
+        import jwt from "jsonwebtoken"
+        const createToken = (res, userId) => {
+              let token = jwt.sign({userId}, process.env.JWT_SECRET, {expireIn: "3d"});
+              res.cookie("jwt", token, {
+                     httpOnly: true,
+                     secure: process.env.NODE_ENV != "development",
+                     sameSite: "strict",
+                     maxAge: 3*24*60*60*1000
+              })
+        }
+        jwt.singn({object}, process.env.JWT_SECRET, {expireIn: "3d}) ==> E 
+
+        hssm:tps3
+
+.env > JWT_SECRET=securatekey
+
+user.controller.js > login > createToken(res, user._id)
+                     signup > createToken(res, user._id);
+                     logout > res.clearCookie("jwt)
+
+user.router.js > router.post("/logout", logout);
+
+middleware > asyncHandler.middleware.js > const asyncHandler = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next); ==> E  
+
+user.controller.js > signup > asyncHandler()
+                     login > asyscHandler()
+                     logout > asyncHandler()
+
+
+
                          
 
 
