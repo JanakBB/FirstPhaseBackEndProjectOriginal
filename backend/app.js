@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 
 // router imports
 import userRouter from "./routes/user.router.js";
@@ -13,6 +14,7 @@ const app = express();
 
 // middlewares
 app.use(express.json())
+app.use(cookieParser());
 app.use(express.static("public"));
 
 // routes

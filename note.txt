@@ -174,7 +174,50 @@ user.controller.js > signup > asyncHandler()
                      logout > asyncHandler()
 
 
+CLASS 37-Authorazation  
+----------------------
+user.controller.js > getUsers > await User.find({}).select("-password");
+user.router.js > router.get("/", getUsers)
 
+middleware > auth.middleware.js > const checkAuth = asyncHandler(async(req, res, next) => {
+       let token = req.cookies.jwt;
+       console.log(token);
+       next(); ==> E 
+})
+npm i cookie-parser
+app.js > import cookieParser from "cookie-parser"
+         app.use(cookieParser());//as middleware
+user.router.js > import {checkAuth} form "../middleware/auth.middleware.js"
+                 router.get("/", checkAuth, getUsers);
+
+checkAuth > if(!token){
+       let err = new Error("You must be logged in!");
+       err.status = 401;
+       next(err);
+}
+
+checkAuth > import jwt from "jsonwebtoken"
+            try{
+       let {userId} = jwt.verify(token, process.env.JWT_SECRET);
+       let userdetail = await User.findById(userId).select("-password");
+       req.user = userdetail;
+       next();
+}
+catch(e) {
+       let err = new Error("Invalid token!");
+       err.status = 401;
+       next(err);
+}
+
+const checkAdmin = asyncHandler(async(req, res, next) => {
+       let {isAdmin} = req.user;
+       if(isAdmin) next();
+       else{
+              let err = new Error("Your are not authorized to perform this operation");
+              err.status = 403;
+              next(err);
+       }
+}) ==> E 
                          
 
 

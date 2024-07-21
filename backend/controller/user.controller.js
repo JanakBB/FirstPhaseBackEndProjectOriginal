@@ -59,4 +59,9 @@ const logout = asyncHandler((req, res) => {
     res.send({message: "Logout Success!"})
 })
 
-export {signup, login, logout};
+//****************************************************
+const getUsers = asyncHandler(async(req, res) => {
+    let users = await User.find({}).select("-password");
+    res.send(users);
+})
+export {signup, login, logout, getUsers};
