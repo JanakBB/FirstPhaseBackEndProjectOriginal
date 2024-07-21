@@ -218,6 +218,26 @@ const checkAdmin = asyncHandler(async(req, res, next) => {
               next(err);
        }
 }) ==> E 
+
+conclusion 
+----------
+checkAuth:
+----------
+find token using req.cookeis.jwt
+if token had not found gave message to logged in and next()
+if token have than findout userId and update req.user and next()
+
+checkAdmin:
+-----------
+find isAdmin using req.user
+if isAdmin is true next()
+else gave message You are not authorized to perform this operation.
+
+
+
+
+
+
                          
 
 
