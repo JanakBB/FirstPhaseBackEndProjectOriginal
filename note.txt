@@ -256,9 +256,92 @@ user.controller.js > getUserProfile > if(req.user)
                             user.password = req.body.password;
                      }
                      let updatedUser = await user.save();
-                     res.send({message: "user profile updated", user: updatedUser})
+                     res.send({message: "user profile updated", user: updatedUser}); ==> E 
                     }
 
+                    // @desc register new user
+                    // @route /api/v1/users/signup
+                    // @access public
+
+                    updateUser > let id = req.params.id;
+                                 let user = await User.findById(id);
+                                 if(user){
+                                   user.name = req.body.name || user.name;
+                                   user.email = req.body.email || user.email;
+                                   user.isAdmin = Boolean(req.body.isAdmin);
+                                   let updatedUser = await user.save();
+                                   res.send("message: "user updated", user: updatedUser);
+                                 } else {
+                                   throw new ApiError(404, "User not found");
+                                 } ==> E 
+
+                     deleteUser > let id = req.params.id;
+                                  let user = await User.findById(id);
+                                  if(user){
+                                   if(user.isAdmin){
+                                          throw new ApiError(400, "Cannot remove admin user");
+                                   }
+                                   await User.findByIdAndDelete(id);
+                                   res.send("User removed")
+                                  } else {
+                                   throw new ApiError(404, "User not found");
+                                  }
+
+user.router.js > router.put("/update/:id", checkAuth, checkAdmin, updateUser);
+                 router.delete("/update/:id", checkAuth, checkAdmin, deleteUser);
+
+
+CLASS 39-productSchema, reviewSchema
+----------------------------------------
+models> product.model.js > const reviewSchema = new mongoose.Schema({
+                                   name: String,
+                                   comment: String,
+                                   rating: Number,
+                                   user: {
+                                          type: mongoose.Schema.Types.ObjectId,
+                                          required: true,
+                                          ref: "User"
+                                   }
+                           })
+
+                           const productSchema = new mongoose.Schema({
+                                  user: {
+                                   type: mongoose.Schema.Types.ObjectId,
+                                   required: true,
+                                   ref: "User"
+                                  },
+                                  name: {
+                                   type: String,
+                                   required: true,
+                                   minlength: 2
+                                  },
+                                  image: String,
+                                  description: String,
+                                  brand: {
+                                   type: String,
+                                   required: true
+                                  },
+                                  catogary: {
+                                   type: String,
+                                   required: true
+                                  },
+                                  price: {
+                                   type: Number,
+                                   required: true
+                                  },
+                                  countInStock: {
+                                   type: Number,
+                                   required: true
+                                  },
+                                  rating: Number,
+                                  numReviews: Number,
+                                  reviews: [reviewSchema]
+                           },
+                           {timestamps: true}
+                           );
+                           
+                           const Product = mongoose.model("Product", productSchema); ==> E 
+                                                      
                   
 
 

@@ -94,20 +94,26 @@ const updateUserProfile = asyncHandler(async(req, res) => {
     }
 })
 
+// @desc update user details
+// @route /api/v1/users/update/:id
+// @access private/admin
 const updatedUser = asyncHandler(async(req, res) => {
     let id = req.params.id;
     let user = await User.findById(id);
     if(user){
         user.name = req.body.name || user.name;
-    user.email = req.body.email || user.email;
-    user.isAdmin = Boolean(req.body.isAdmin);
-    let updatedUser = await user.save();
-    res.send({message: "User upadated", user: updatedUser})
+        user.email = req.body.email || user.email;
+        user.isAdmin = Boolean(req.body.isAdmin);
+        let updatedUser = await user.save();
+        res.send({message: "User upadated", user: updatedUser})
     } else{
         throw new ApiError(404, "User not found");
     }
 })
 
+// @desc delete user
+// @route /api/v1/users/update/:id
+// @access private/admin
 const deleteUser = asyncHandler(async(req, res) => {
     let id = req.params.id;
     let user = await User.findById(id);
@@ -116,7 +122,7 @@ const deleteUser = asyncHandler(async(req, res) => {
             throw new ApiError(400, "Cannot remove admin user")
         }
         await User.findByIdAndDelete(id);
-        res.send("User removed");
+        res.send({message: "User removed"});
     } else {
         throw new ApiError(404, "User not found");
     }
