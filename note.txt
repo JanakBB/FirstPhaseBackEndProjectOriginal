@@ -234,7 +234,32 @@ if isAdmin is true next()
 else gave message You are not authorized to perform this operation.
 
 
+CLASS 38-getUser, updateUser, deleteUser 
+----------------------------------------
+utils > apiError.js > class ApiError extends Error {
+       constructor(status, message){
+              super(message)
+              this.status = status
+       }
+} ==> E 
 
+all err converted into throw new ApiError(statusCode, message);
+
+user.controller.js > getUserProfile > if(req.user)
+                                      res.send(req.user) ==> E 
+
+                    updateUserProfile > if(req.user){
+                     let user = await User.findById(req.user._id);
+                     user.name = req.body.name || user.name;
+                     user.email = req.body.email || user.email;
+                     if(req.body.password){
+                            user.password = req.body.password;
+                     }
+                     let updatedUser = await user.save();
+                     res.send({message: "user profile updated", user: updatedUser})
+                    }
+
+                  
 
 
 

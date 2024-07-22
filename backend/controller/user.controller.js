@@ -1,19 +1,18 @@
 import asyncHandler from "../middleware/asynchandler.middleware.js";
 import User from "../models/user.model.js";
+import ApiError from "../utils/apiError.js";
 import createToken from "../utils/token.utils.js";
-// import bcrypt from "bcryptjs";
 
+
+// @desc register new user
+// @route /api/v1/users/signup
+// @access public
 const signup = asyncHandler(async(req, res, next) => {
     let {name, email, password, isAdmin} = req.body;
     let userexists = await User.findOne({email});
     if(userexists){
-        let err = new Error(`User with email ${email} already exists!`)
-        err.status = 400;
-        next(err);
+        throw new ApiError(400, `User with email ${email} already exists!`)
     }
-
-    // let salt = await bcrypt.genSalt(10);
-    // let hashedPassword = await bcrypt.hash(password, salt);
 
     let newUser = await User.create({
         name,
@@ -35,33 +34,92 @@ const signup = asyncHandler(async(req, res, next) => {
     })
 })
 
+// @desc login user
+// @route /api/v1/users/login
+// @access public
 const login = asyncHandler(async(req, res, next) => {
     let {email, password} = req.body;
     let user = await User.findOne({email});
     if(!user){
-        let err = new Error(`${email} is not registered!`);
-        err.status = 400;
-        next(err);
+        throw new ApiError(400, `${email} is not registered!`)
     }
 
     if(await user.matchPassword(password)){
         createToken(res, user._id);
         res.send({message: "Login successfully!"})
     } else {
-        let err = new Error("Password is not matched");
-        err.status = 404;
-        next(err);
+        throw new ApiError(404, "Password is not matched")
     }
 })
 
+// @desc logout the loggedin user
+// @route /api/v1/users/logout
+// @access private
 const logout = asyncHandler((req, res) => {
     res.clearCookie("jwt");
     res.send({message: "Logout Success!"})
 })
 
 //****************************************************
+// @desc get all users
+// @route /api/v1/users/
+// @access private/public
 const getUsers = asyncHandler(async(req, res) => {
     let users = await User.find({}).select("-password");
     res.send(users);
 })
-export {signup, login, logout, getUsers};
+
+// @desc fetch user profile
+// @route /api/v1/users/profile
+// @access private
+const getUserProfile = asyncHandler(async(req, res) => {
+    if(req.user) {
+        res.send(req.user);
+    }
+});
+
+// @desc update user profile
+// @route /api/v1/users/profile
+// @access private
+const updateUserProfile = asyncHandler(async(req, res) => {
+    if(req.user){
+        let user = await User.findById(req.user._id);
+        user.name = req.body.name || user.name;
+        user.email = req.body.email || user.email;
+        if(req.body.password){
+            user.password = req.body.password;
+        }
+        let updatedUser = await user.save();
+        res.send({message: "User profile updated", user: updatedUser});
+    }
+})
+
+const updatedUser = asyncHandler(async(req, res) => {
+    let id = req.params.id;
+    let user = await User.findById(id);
+    if(user){
+        user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    user.isAdmin = Boolean(req.body.isAdmin);
+    let updatedUser = await user.save();
+    res.send({message: "User upadated", user: updatedUser})
+    } else{
+        throw new ApiError(404, "User not found");
+    }
+})
+
+const deleteUser = asyncHandler(async(req, res) => {
+    let id = req.params.id;
+    let user = await User.findById(id);
+    if(user){
+        if(user.isAdmin){
+            throw new ApiError(400, "Cannot remove admin user")
+        }
+        await User.findByIdAndDelete(id);
+        res.send("User removed");
+    } else {
+        throw new ApiError(404, "User not found");
+    }
+})
+
+export {signup, login, logout, getUsers, getUserProfile, updateUserProfile, updatedUser, deleteUser};
