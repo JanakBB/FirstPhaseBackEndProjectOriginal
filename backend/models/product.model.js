@@ -42,7 +42,7 @@ const productSchema = new mongoose.Schema({
     },
     rating: Number,
     numReviews: Number,
-    revirews: [reviewSchema]
+    reviews: [reviewSchema]
 },
 {timestamps: true}
 );

@@ -292,7 +292,7 @@ user.router.js > router.put("/update/:id", checkAuth, checkAdmin, updateUser);
 
 
 CLASS 39-productSchema, reviewSchema
-----------------------------------------
+------------------------------------
 models> product.model.js > const reviewSchema = new mongoose.Schema({
                                    name: String,
                                    comment: String,
@@ -342,6 +342,55 @@ models> product.model.js > const reviewSchema = new mongoose.Schema({
                            
                            const Product = mongoose.model("Product", productSchema); ==> E 
                                                       
+
+CLASS 40-productSchema, reviewSchema
+------------------------------------
+controller > product.controller.js > import Product from "../models/product.model.js"
+                                     getProducts => await Product.find({})
+                                     
+                                     getProduct > let product = await Product.findById({id});
+                                                  if(!product) {
+                                                        throw new ApiError(404, "Product not found!");
+                                                  }
+                                                  res.send(product)
+                                     
+                                     addProduct > let product = await Product.create({...req.body, user: req.})
+
+                                     updateProduct > id = req.params.id
+                                                     product = await Product.findById(id);
+                                                     if(!product) throw new ApiError(404, "Product not found")
+
+                                                     product.name = req.body.name || product.name;
+                                                     product.description = req.body.description || prodcut.description;
+                                                     product.image = req.body.image || product.imgae;
+                                                     product.brand = req.body.brand || product.brand;
+                                                     product.category = req.body.category || product.category;
+                                                     product.price = req.body.price || product.price;
+                                                     product.countInStock = req.body.countInStock || product.countInStock;
+
+                                                     let updatedProduct = await product.save();
+
+                                                     res.send({message: "Product updated successfully!", product: updatedProduct})
+
+                                                     deleteProduct > await Product.findByIdAndDelete(id);
+
+routes > product.router.js > router.route("/).get(getProducts).post(checkAuth, checkAdmin, updateProduct);
+                             router.route("/:id").get(getProductById).put(checkAuth, CheckAdmin, updateProduct).delete(checkAuth, checkAdmin, deleteProduct);
+
+product.controller.js > addUserReview > id = req.params.id;
+                                        {ration, comment} = req.body;
+                                        product = await Product.findById(id);
+                                        if(!product) throw new ApiError(404, "Product not found!");
+
+                                        product.review.push({
+                                          name: req.user.name,
+                                          user: req.user._id,
+                                          rating,
+                                          comment
+                                        })
+
+product.router.js > router.put("/addReview", checkAuth, addUserReview);
+                                     
                   
 
 
