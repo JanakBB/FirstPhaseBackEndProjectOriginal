@@ -1,0 +1,69 @@
+CLASS 52-Mis FrontEnd and BackEnd
+----------------------------------
+Project + FrontEnd > npm create vite@latest frontend
+                     React
+                     JavaScript
+
+                     cd frontend
+                     npm install
+                     npm run dev
+                     
+                     npm i bootstrap
+                     npm i react-bootstrap
+                     npm i react-icons
+
+frontend > src > App.css - inner-item - D 
+                 Index.css - inner-item - D 
+                 App.jsx -clear default items
+                 main.jsx > import "bootstrap/dist/css/bootstrap.min.css";
+
+src > components > Header.js > import {} from "react-bootstrap";
+                               
+                               <Navbar></Navbar> > variant="dark"
+                                                   bg="dark"
+                                                   expand="md"
+                                                   collapseOnSelect
+                    Header ==> E 
+
+App.jsx > import Header from "./components/Header.jsx"
+
+Header.jsx > Navbar > import logo from "../assets/react.svg";
+
+                      <Container></Container>
+                      <Navbar.Brand>
+                        <img src={logo} alt="logo" /> Broadway
+                      </Navbar.Brand>
+
+                      <Navbar.Toogle aria-controls="navbar" /> //aria-controls and id must be the same.
+                      <Navbar.Collapse id="navbar">
+                        <Nav>
+                            <Nav.Link>
+                               Cart
+                            </Nav.Link>                            
+                            <Nav.Link>
+                               Signin
+                            </Nav.Link>
+                        </Nav>
+                      </Navbar.Collapse>
+
+                      Nav > className="ms-auto" ==> e
+                      
+                      import {FaShoppingCart, FaUser} from "react-icons/fa";
+
+                      Nav.Link > <FaShoppingCart/>
+                                 <FaUser/> ==> i
+
+Footer.jsx > import {Container} from "react-bootstrap";
+             <footer>
+               <Container>
+                    <p>Broadway &copy; {new Date().getFullYear()}</p>
+               </Containr>
+             </footer> ==> E 
+
+             p > className="text-center"
+
+public > images > insert image in images folder
+
+            
+                              
+                                                
