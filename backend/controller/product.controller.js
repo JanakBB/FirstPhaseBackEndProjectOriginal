@@ -69,14 +69,21 @@ const addUserReview = asyncHandler(async(req, res) => {
     let product = await Product.findById(id);
     if(!product) throw new ApiError(404, "Product not found!");
 
+    const alreadyReviewed = product.reviews.find(r => r.user.toString() === req.user._id.toString());
+    if(alreadyReviewed) throw new ApiError(400, "Already reviewed!")
+
     product.reviews.push({
         name: req.user.name,
         user: req.user.id,
         rating,
         comment
     });
+
+    product.numReviews = product.reviews.length;
+    let totalRating = product.reviews.reduce((acc, r) => acc + r.rating, 0);
+    product.rating = totalRating / product.numReviews;
     await product.save();
-    res.send("Review added to product");
+    res.send({message: "Review added to product"});
 })
 
 export {getProducts, getProductById, addProduct, updateProduct, deleteProduct, addUserReview} ;

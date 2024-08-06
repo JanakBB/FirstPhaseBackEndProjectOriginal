@@ -390,6 +390,23 @@ product.controller.js > addUserReview > id = req.params.id;
                                         })
 
 product.router.js > router.put("/addReview", checkAuth, addUserReview);
+
+
+CLASS 41-productRouter
+----------------------
+addProductReview > alreadyReview = product.rewiews.find(r => r.user.toString() === req.user._id.toString())
+                   if(alreadyReview) throw new ApiError(400, "Already reviewed!")
+
+                   product.reviews.push({
+                     name: req.user.name,
+                     user: req.user._id,
+                     rating,
+                     comment
+                   });
+
+                   product.numreviews = product.reviews.length;
+                   let totalRating = product.reviews.reduce((acc, r) => acc + r.rating, 0);
+                   product.rating: totalRating / product.numReviews;
                                      
                   
 
