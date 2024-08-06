@@ -407,6 +407,70 @@ addProductReview > alreadyReview = product.rewiews.find(r => r.user.toString() =
                    product.numreviews = product.reviews.length;
                    let totalRating = product.reviews.reduce((acc, r) => acc + r.rating, 0);
                    product.rating: totalRating / product.numReviews;
+
+
+CLASS 42-Data, seeder
+----------------------
+data > users.js > import bcrypt form "bcryptjs";
+                  
+                  users = [
+                     {name: "admin", email: "admin@example.com", password: bcrypt.hashSync("password", 10), "isAdmin": true},
+                     {name: "John Doe", email: "john@example.com", password: bcrypt.hashSync("password1", 10)},
+                     {name: Jahn Doe", email: "Jahn@example.com", password: bcrypt.hashSync("password2", 10)}
+                     ]; ==> E 
+
+       products.js > copy and paste ==> E 
+
+seeder.js > import users from "./data/users.js"
+            import products from "./data/products.js"
+            import User from "./models/user.model.js"
+            import Product from "./models/product.model.js"
+            import connectDB from "./config/db.js"
+
+            connectDB();
+
+            node -v v20.10.0 under npm i dotenv => import dotenv from "dotenv"  
+                                                   dotenv.config();
+            node -v v20.10.0 above no need to do anything 
+            process.loadEnvFile();
+
+            loadData > await Product.deleteMany();
+                       await User.deleteMany();
+
+                       newUsers = await User.insertMany(users);
+                       await Product.insertMany(products.map((product) => {
+                            return {
+                                   ...product,
+                                   user: newUsers[0]._id
+                            }
+                       }))
+
+                       console.log("Data Loaded!")
+                       process.exit();//successfully exit
+
+                       try catch > catch(err) {
+                            console.log(err.message);
+                            process.exit(1)//error exit
+                       }
+
+              destroyData > await Product.deleteMany();
+                            await User.deleteMany();
+                            console.log("Data Cleared!".red.inverse);//inverse means background of console
+
+              if(process.argv[2] === "-d") {
+                     destroyData();
+              } else {
+                     loadData();
+              }
+
+package.json > "data-import": "node backend/seeder.js"
+               "data-destroy": "node backend/seeder.js -d"
+              
+
+
+
+
+
                                      
                   
 
