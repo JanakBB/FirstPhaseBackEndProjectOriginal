@@ -467,27 +467,15 @@ package.json > "data-import": "node backend/seeder.js"
                "data-destroy": "node backend/seeder.js -d"
               
 
+CLASS 43-Regex101, validations
+------------------------------
+utils > validator.js > isEmail(email) > let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                                                           //copy from ChatGPT search email regex 
+                                        return emailPattern.test(email)//true or false ==> E 
+
+product.controller.js > import isEmail from "../utils/validator.js";
+                        signUp > if(!isEmail(email)) throw new ApiError(400, "Invalid Email Pattern!");
 
 
 
-
-                                     
-                  
-
-
-
-                         
-
-
-
-
-
-
-
-
-
-
-
-                
-
- 
+                                  First Phase BackEnd Finish !!!
