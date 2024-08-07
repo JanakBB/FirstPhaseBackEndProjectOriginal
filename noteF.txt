@@ -65,8 +65,8 @@ Footer.jsx > import {Container} from "react-bootstrap";
 public > images > insert image in images folder
 
 
-CLASS 53-Product, 
-----------------------------------
+CLASS 53-ProductPage, Product, Rating
+-------------------------------------
 components > Product.jsx > import {Card} from "
              {product} //props 
              <Card>
@@ -214,3 +214,41 @@ ProductPage > <Col md={4}>
               <ListGroup variant="flush"> //to appear border
 
               
+CLASS 54-react-router-dom
+-------------------------
+Project + Frontend > frontend > Terminal > npm i react-router-dom
+
+pages > HomePage > import products from "../data.js";
+                   import {Row, Col} from "react-bootstrap";
+                   import Product from "../Product.jsx";
+
+App.jsx > cut(
+             {/* <Row>
+                  {
+                    products.map(product => (
+                      <Col sm={12} md={6} lg={4} xlg={3}>
+                          <Product product={product} />
+                      </Col>
+                    ))
+                  }
+                </Row> */} 
+            ) 
+            
+            and paste into HomePage.jsx
+
+main.jsx > import {RouterProvider, createBrowserRouter, createRoutesFromElements, Route} from "react-router-dom";
+           
+           <RouterProvider router={router} />
+
+           const router = createBrowserRouter(createRoutesFromElements(
+            <Route path="/" element={<App />}>
+              <Route path="" element={<HomePage/>}/>
+              <Route path="/product" element={<ProductPage/>} />
+            </Route>
+           ))
+
+App.jsx > import {Outlet} from "react-router-dom";
+
+          <Container>
+             <Outlet/>
+          </Container>
