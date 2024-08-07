@@ -1,0 +1,20 @@
+.rating{
+    margin: 0.5rem;
+}
+.rating svg {
+    color: rgb(249, 139, 14);
+}
+
+.numReviews{
+    font-weight: bold;
+    font-size: 0.8rem;
+
+    padding-left: 0.5rem;
+}
+
+.product-title {
+    line-height: 1.8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

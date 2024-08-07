@@ -64,6 +64,153 @@ Footer.jsx > import {Container} from "react-bootstrap";
 
 public > images > insert image in images folder
 
-            
-                              
-                                                
+
+CLASS 53-Product, 
+----------------------------------
+components > Product.jsx > import {Card} from "
+             {product} //props 
+             <Card>
+                <Card.Img></Card.Img> ==> e (variant="top", src = {product.image})
+             </Card>
+                                                              
+App.jsx > import products from "./data.js" //data.js is sample data like backend > data > products.js
+
+          import Product from "./component/Product.jsx";
+          
+          <Product product={products[0]}
+
+Product > Card ==> e (className="my-3 p-3 rounded)
+          
+          <Card.Body>
+              <Card.Text as="div">
+                  <strong>{product.name}</strong>
+              <Card.Text>
+              <Card.Text as="h3">
+                  ${product.price}
+              </Card.Text>
+          </Card.Body>
+
+components > Rating > import {FaStar, FaStarHalfAlt, FaRegStar} from "react-icons/fa";
+
+                      props({value, text})
+
+                      <div className="rating">
+                          <span>
+                            {value >= 1 ? <FaStar/> : value >= 0.5 ? <FaStarHalfAlt/> : <FaRegStar/>}
+                          </span>
+                          <span>
+                            {value >= 2 ? <FaStar/> : value >= 1.5 ? <FaStarHalfAlt/> : <FaRegStar/>}
+                          </span>
+                          <span>
+                            {value >= 3 ? <FaStar/> : value >= 2.5 ? <FaStarHalfAlt/> : <FaRegStar/>}
+                          </span>
+                          <span>
+                            {value >= 4 ? <FaStar/> : value >= 3.5 ? <FaStarHalfAlt/> : <FaRegStar/>}
+                          </span>
+                          <span>
+                            {value >= 5 ? <FaStar/> : value >= 4.5 ? <FaStarHalfAlt/> : <FaRegStar/>}
+                          </span>
+                      </div> ==> E 
+
+                      <span className="numreviews">
+                        {text} Reviews
+                      </span>
+
+index.css > .rating {
+              margin: 0.5rem;
+            }
+
+            .rating svg {
+              color: yellow;
+            }
+
+            .numReviews {
+              font-size: 0.8rem;
+              font-weight: bold;
+              padding-left: 0.5rem;
+            }
+
+app.jsx > <Container>
+            <Row>
+              {
+                products.map(product => (
+                  <Col sm={12} md={6} lg={4} xlg={3}>
+                    <Product product={product}/>
+                  </Col>
+                ))
+              }
+            </Row>  
+          </Container>
+
+ Product.jsx > <strong className=product-title>
+                 {product.name}
+               </strong>  
+
+index.css > .product-title {
+                line-height: 1.8rem;
+                overflow: hidden;
+                text-overflow: ellipsis;//...
+                white-space: nowrap;
+             }              
+
+src > pages > ProductPage.jsx > let product = {};
+                                
+                                <Row>
+                                  <Col md={5}>
+                                    <Image src={product.image}/>
+                                  </Col>
+                                </Row> ==> E 
+
+App.jsx > import ProductPage.jsx
+          <ProductPage />
+
+ProductPage > <Col md={4}>
+                <ListGroup variant="flush">
+                  <ListGroup.Item>
+                      <h3>
+                        {product.name}
+                      </h3>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                      <h5>
+                        {product.price}
+                      </h5>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                      <Rating value={product.rating} text={product.numReviews} />
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                      <sapn>{product.description}</span>
+                  </ListGroup.Item>
+                </ListGroup>
+              </Col>
+
+              <Image fluid /> //like water
+
+              <Col md={3}>
+                <ListGrop>
+                  <ListGroup.Item>
+                    <Row>
+                    <Col>Price</Col>
+                    <Col><strong>{product.price}</strong></Col>
+                  </Row>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Status</Col>
+                      <Col>{
+                        product.countInStock > 0 ? "In Stock" : "Out of Stock"
+                      }</Col>
+                    </Row>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                      <Button variant="secondary disabled={product.countInStock === 0}>
+                        Add to Cart
+                      </Button>
+                  </ListGroup.Item>
+                </ListGroup>
+              </Col>
+
+              <ListGroup variant="flush"> //to appear border
+
+              
