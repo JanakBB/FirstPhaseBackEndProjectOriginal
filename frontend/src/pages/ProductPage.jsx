@@ -1,20 +1,19 @@
 import { Col, Row, Image, ListGroup, Button } from "react-bootstrap"
 import Rating from "../components/Rating";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 
 const ProductPage = () => {
-    let product = {
-        name: "Airpods Wireless Bluetooth Headphones",
-        image: "/images/airpods.jpg",
-        description:
-          "Bluetooth technology lets you connect it with compatible devices wirelessly High-quality AAC audio offers immersive listening experience Built-in microphone allows you to take calls while working",
-        brand: "Apple",
-        category: "Electronics",
-        price: 89.99,
-        countInStock: 155550,
-        rating: 4.5,
-        numReviews: 12,
-      }
+    const [product, setProduct] = useState([]);
+    let {id} = useParams();
+    useEffect(() => {
+        axios.get(`/api/v1/products/${id}`)
+         .then(resp => setProduct(resp.data))
+         .catch(err => console.log("ERROR:: ", err.message))
+    }, []);
+
 
       return(
         <Row>

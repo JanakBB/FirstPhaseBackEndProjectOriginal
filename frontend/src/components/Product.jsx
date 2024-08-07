@@ -1,4 +1,5 @@
 import { Card } from "react-bootstrap"
+import { NavLink } from "react-router-dom";
 import Rating from "./Rating";
 
 const Product = ({product}) => {
@@ -7,7 +8,9 @@ const Product = ({product}) => {
             <Card.Img variant="top" src={product.image}/>
             <Card.Body>
                 <Card.Text as="div" className="product-title">
+                    <NavLink to={`/product/${product._id}`}>
                     <strong>{product.name}</strong>
+                    </NavLink>
                 </Card.Text>
                 <Card.Text as="h3">
                     ${product.price}

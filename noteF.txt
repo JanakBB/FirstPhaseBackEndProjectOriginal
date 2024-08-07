@@ -252,3 +252,67 @@ App.jsx > import {Outlet} from "react-router-dom";
           <Container>
              <Outlet/>
           </Container>
+
+
+CLASS 55-CartPage, SigninPage, server proxy
+-------------------------------------------
+pages > CartPage.jsx ==> C
+        SigninPage.jsx ==> C
+
+Header.jsx > import {NavLink} from "react-router-dom";
+             
+             <NavLink to="/cart">
+                Cart
+             </NavLink>
+             <NavLink to="/signin">
+               Signin
+             </NavLink>
+
+main.jsx > <Route path="/cart" element={<CartPage/>}/>
+           <Route path="/signin" element={<SigninPage/>}/>
+
+           import CartPage from "./pages/CartPage.jsx";
+           import SigninPage from "./pages/SigninPage.jsx";
+
+Header.jsx > <NavLink className="nav-link"
+             
+             <Navbar.Brand> ==> D <NavLink to="/" className="navbar-brand>
+
+Project + FrontEnd > Terminal > npm run data-import
+                                npm run server
+
+vite.config.js > server: {
+                   proxy: {
+                    "/api": "http://localhost:5100"
+                   }
+                 }
+
+HomePage.jsx > import {useEffect, useState} from "react";
+               
+               const [products, setProducts] = useState([]);
+
+               useEffect(() => {
+                fetch("/api/v1/products")
+                 .then(resp => resp.json())
+                 .then(data => setProducts(data))
+                 .catch(err => console.log("ERROR:: ", err.message))
+               }, []);
+
+               <Col key={product._id}>
+
+frontend > npm i axios
+
+ProductPage.jsx > import axios from "axios";
+                  import useState from "react";
+                  import {id} from "useParams";
+
+                  const [product, setProduct] = useState([])
+
+                  useEffect(() => {
+                    axios(`/api/v1/products/${id}`)
+                   .then(data => setProduct(data))
+                   .catch(err => console.log("ERROR:: ", err.message));
+                  })
+
+
+
