@@ -322,4 +322,126 @@ frontend > Terminal > npm i @reduxjs/toolkit => This is Library.
 
 chrome extension > Redux Dev Tools
 
+frontend > src > store.js > import {configureStore} from "@reduxjs/toolkit";
+                            
+                            export store = configureStore({}); //for global state handle
+                 
+                 slices > cartSlice.js > import {createSlice} from "@reduxjs/toolkit";
+                                         
+                                         const initialState = {
+                                          cartItems: []
+                                         }
+
+                                         const cartSlice = createSlice({
+                                          name: "cart",
+                                          initialState,
+                                          reducers: {
+                                            addToCart: (state, action) => {
+                                                state.cartItems = [...state.cartItems, action.payload] //any type of variable (array, object, variable, boolean, number, etc)
+                                            },
+                                            removeItem: (state, action) => {
+
+                                            }
+                                          }
+                                         });
+
+                                         export const {addToCart, removeItem} = cartSlice.actions; //This is for State manipulation => particular action station/component/page
+
+                                         export default cartSlice.reducer; //This is for State Management => Globally => store
+
+store.js > import cartReducer from "./slices/cartSlice";
+          reducer: cartReducer;
+
+main.jsx > import {Provider} from "react-redux";
+           import {store} from "./store.js";
+
+           <Provider store={store}>
+              <RouterProvider router={router} />
+           </Provider>
+
+
+CLASS 57-Redux Toolkit(useDispatch, useSelector)
+------------------------------------------------
+store.js > reducer: {
+            cart: cartSlice,
+           }
+
+Browser > Redux > State > cart > cartItems > []
+
+step 1 > when we click Add to Cart, than items add into cart(cartReducer)
+
+step 2 > ProductPage > import {useDispatch} from "react-redux";
+                       Dispatch means send(पठाउनु)
+                       import {addToCart} from "../slices/cartSlice";
+
+                       const dispatch = useDispatch();
+
+                       const addToCartHandler = (item) => {
+                          dispatch(addToCart(item))
+                        }
+
+                      <Button onClick={() => addToCarthandler(product)}>
+                        Add to Cart 
+                      </Button>
+
+step 3 > Browser > Redux > State > cart > cartItems [{...},{...}]
+
+step 4 > How much is required when adding to card 
+         ----------------------------------------
+         const [qty, setQty] = useState(0);
+
+         ProductPage.jsx > above the Add to Cart Button
+                           <ListGroup.Item>
+                              <Form.Control 
+                                as="select"
+                                value={qty}
+                                onChange={e => setQty(e.target.value)}
+                              >
+                                  <option>1</option>
+                                  <option>2</option>
+                                  <option>3</option>
+                              </Form.Control>
+                           </ListGroup.Item>
+
+step 5 > auto generate seletct option value
+         ----------------------------------
+         {
+          [...Array(product.countInStock).keys()].map(x => (
+            <option key={x + 1}>{x + 1}</option>
+          ))
+         }
+
+step 6 > addToCartHandler({...product, qty});
+         
+         [qty, setQty] = useState(1);
+
+         addToCarthandler({...product, qty: Number(qty)})
+
+step 7 > we face new problem: cart item को value change गर्दा new item add नभएर केवल qty मात्र update हुनु पर्ने तर भइरहेको छैन । 
+
+       solution >
+       ----------
+       cartSlice.js > addToCart > 
+                      
+                      let existingItem = state.cartItems.find(item => item._id === action.payload._id);
+                      if(existingItem) {
+                        state.cartItems = state.cartItems.map(item => (item._id === existingItem._id ? action.payload : item))
+                      } else {
+                        state.cartItems = [...state.cartItems, action.payload]
+                      }
+
+step 8 > add badge into header Cart icons
+         --------------------------------
+         Header.jsx > Cart right side > <FaShoppingCart/> Cart <Badge bg="success" pill>1</Badge>
+
+         import {useSelector} from "react-redux";
+         const {cartItems} = useSelector(state => state.cart);//cart दिनु भनेको store को cart दिनु हो, store को cart मा cartReducer हुनु भनेको cartSlice को  initialState को cartItems दिनु सरहको हो । त्यही भएर हामीले state => state.cart बाट Destructuring गरी cartItems निकाल्न सकिन्छ ।
+
+         <Badge>
+         {cartItems.reduce(acc, item) => acc + item.qty, 0}
+         </Badge>
+
+         {cartItems.length > 0 && <Badge></Badge>} //cartItem मा कुनै पनि item add भएको छैन भने Badge मा केहि देखाउदैन ।
+
+
 
