@@ -1,7 +1,7 @@
 import { Col, Row, Image, ListGroup, Button, Form } from "react-bootstrap";
 import Rating from "../components/Rating";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../slices/cartSlice";
@@ -11,6 +11,7 @@ const ProductPage = () => {
   const [qty, setQty] = useState(1);
   let { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(`/api/v1/products/${id}`)
@@ -20,6 +21,7 @@ const ProductPage = () => {
 
   const addToCartHandler = (item) => {
     dispatch(addToCart(item));
+    navigate("/cart")
   };
 
   return (
