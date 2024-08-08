@@ -254,8 +254,8 @@ App.jsx > import {Outlet} from "react-router-dom";
           </Container>
 
 
-CLASS 55-CartPage, SigninPage, server proxy
--------------------------------------------
+CLASS 55-CartPage, SigninPage, server proxy, fetch, axios
+---------------------------------------------------------
 pages > CartPage.jsx ==> C
         SigninPage.jsx ==> C
 
@@ -314,5 +314,12 @@ ProductPage.jsx > import axios from "axios";
                    .catch(err => console.log("ERROR:: ", err.message));
                   })
 
+
+CLASS 56-Redux Toolkit
+----------------------
+frontend > Terminal > npm i @reduxjs/toolkit => This is Library.
+                      npm i react-redux => This is wraper of @reduxjs/toolkit
+
+chrome extension > Redux Dev Tools
 
 
