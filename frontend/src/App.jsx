@@ -8,7 +8,7 @@ function App() {
   return (
     <>
     <Header />
-     <Container>
+     <Container className="my-4 p-4">
        <Outlet />
      </Container>
      <Footer/>

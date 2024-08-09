@@ -59,47 +59,49 @@ const CartPage = () => {
           ))}
         </ListGroup>
       </Col>
-      {
-        cartItems.length > 0 &&       <Col md={4}>
-        <ListGroup>
-          <ListGroup.Item>
-            <h4>
-              Total ({cartItems.reduce((acc, item) => acc + item.qty, 0)}) items
-            </h4>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <Row>
-              <Col>Sub Total</Col>
-              <Col>
-                $
-                {cartItems
-                  .reduce((acc, item) => acc + item.qty * item.price, 0)
-                  .toFixed(2)}
-              </Col>
-            </Row>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <Row>
+      {cartItems.length > 0 && (
+        <Col md={4}>
+          <ListGroup>
+            <ListGroup.Item>
+              <h4>
+                Total ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
+                items
+              </h4>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Row>
+                <Col>Sub Total</Col>
+                <Col>
+                  $
+                  {cartItems
+                    .reduce((acc, item) => acc + item.qty * item.price, 0)
+                    .toFixed(2)}
+                </Col>
+              </Row>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Row>
                 <Col>Shipping Cost</Col>
                 <Col>${5}</Col>
-            </Row>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <Row>
+              </Row>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Row>
                 <Col>Total Price</Col>
                 <Col>
-                    {cartItems.reduce((acc, item) => acc + item.qty * item.price, 0) + 5}
+                  ${(cartItems.reduce(
+                    (acc, item) => acc + item.qty * item.price,
+                    0
+                  ) + 5).toFixed(2)}
                 </Col>
-            </Row>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <Button>
-                Checkout
-            </Button>
-          </ListGroup.Item>
-        </ListGroup>
-      </Col>
-      }
+              </Row>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Button>Checkout</Button>
+            </ListGroup.Item>
+          </ListGroup>
+        </Col>
+      )}
     </Row>
   );
 };

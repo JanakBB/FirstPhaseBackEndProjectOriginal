@@ -573,4 +573,130 @@ CartPage.jsx > <Col md={4}>
                 cartItems.length > 0 && <Col md={4}></Col>
                }
 
+Class 58 सम्मको काम भनेको data fetch or axios गर्दा HomePage र ProductPage मा  data Loading... गरेको, त्यही data लाई आधार मानेर RTK को global State Management भएको छ ।
+
+RTK State Management
+--------------------
+store.js > reducer मा cartSlice related reducers store गरिएको छ । जसमा cartSlice को initialState भित्रको cartItems को data ले प्रतिनिधित्व गरिरहेको हुन्छ ।
+        
+cartSlice.js > initialState > सुरुवाती वा परिमार्जित(updated) data रहन्छ । 
+               reducers > initialState वा सो भित्रको object को data मा फेरबदेल वा परिमार्जित गर्ने साधन नै reducers हो ।
+               reducers भित्र भिन्न भिन्न method function रहेका हुन्छन्, जसको काम भनेको initialState को value मा परिवर्तन वा updata गर्ने हो ।
+                       initialState मा के के परिवर्तन गर्ने हो त्यसको सम्पुर्ण गतिविधि यहि method funtion बाट गरिन्छ ।
+
+               cartSlice बाट method function लाई export गर्नु पर्छ । जुन cartSlice.action को माध्यमबाट गर्न सकिन्छ । यि  export method function हरुले आवश्यकता अनुसार useDispatch को सहायताले origin method decleration मा action.payload को माध्यमबाट initialState को value मा परिमार्जन गर्न भुमिका खेल्ने गर्दछ। 
+
+               यदि store को data अन्य statement मा आवश्यक परेमा useSelector को माध्यमबाट state.cart बाट destructure गरेर cartItems(cartSlice को initialState) को रुपमा प्राप्त गर्न सकिन्छ ।
+
+               साराशंः store मा रहेको जुनसुकै data लाई update र get गर्न सकिन्छ ।
+
+               store को data Globally access गराउने काम react-redux को Provider ले गराउदछ, जहाँ store को data लाई Provider ले props रुपमा आफ्ना children हरुलाई स्वतन्त्र रुपमा हस्तानान्तरण गरिरहेको हुन्छ ।
+
+CLASS 59-RTK Query
+------------------
+slices > apiSlice.js > import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
+
+src > constants.js > export const BASE_URL="";
+                     export const PRODUCT_URL="/api/v1/products";
+                     export const USER_URL="/api/v1/users"
+
+apiSlice.js > import {BASE_URL} from "../constants";
+              
+              const baseQuery = fetchBaseQuery(baseUrl: BASE_URL);
+
+              export const apiSlice = createApi({
+                baseQuery,
+                tagTypes: ["product", "User", "Order"];,
+                endpoints:(builder) => ({}),
+               });
+              
+              tagTypes
+              --------
+              for cache memory in redux. cache means store.
+              cache memory भनेको त्यो हो जुन कुनै पनि data fetching गर्दा पहिलो पटक database बाट data आउछ, तर त्यही प्रकृतीको data browser लाई आवश्यक पर्यो भने cache memory बाट लिन्छ ।
+              कुनै पनि data लाई data fetching गरी first time database बाट cache memory मा data store गर्न सकिन्छ ।
+              साथै विभिन्न प्रकृतिको data लाई भिन्न भिन्न स्थानमा Data cache(store) गर्न सकिन्छ । 
+              जस्तैः Product, User, Order, etc.
+
+              endpoints
+              ---------
+              endpoints cartSlice को reducers जस्तै हो । 
+              यसले भिन्न भिन्न प्रकृतिका api को fetch गर्ने गर्दछ ।
+              
+              builder
+              -------
+              builder भनेको data fetch or axios जस्तै हो ।
+              endpoints and builder को सहायताले धेरै api methods बनाउन सकिन्छ ।
+              ति api method मा builder को सहायताले query and mutation गर्न सकिन्छ ।
+
+              builder.query
+              -------------
+              database बाट data get गर्नलाई आवश्यक पर्छ ।
+
+              builder.mutation
+              ----------------
+              database मा post, delete, update, patch गर्न आवश्यक पर्दछ ।
+
+              builder.query or builder.mutation जेसुकै गर्नु परे पनि query field कै प्रयोग गर्नु पर्छ ।
+
+slices > productSlice.js > import {apiSlice} from "./apiSlice.js";
+                           
+                           const productSlice = apiSlice.injectEndpoints({
+                            endpoints: (builder) => ({
+                              getProducts: builder.query({}),
+                              getProductById: builder.query({}),
+                              updateProductById: builder.mutation({}),
+                              deleteProductById: builder.mutation({}),
+                            }),
+                           })
+
+                           const productSlice = apiSlice.injectEndpoints({
+                            endpoints: (builder) => ({
+                              getProducts: builder.query({
+                                query: () => ({
+                                  url: PRODUCT_URL,
+                                })
+                              }),
+                              getProductById: builder.query({
+                                query: (id) => ({
+                                  url: `${PRODUCT_URL}/${id}`,
+                                })
+                              }),
+                              updateProductById: builder.mutation({
+                                query: () => ({
+                                  url: 
+                                })
+                              }),
+                              deleteProductById: builder.mutation({
+                                query: () => ({
+                                  url: 
+                                })
+                              }),
+                            }),
+                           })
+
+store.js > import {apiSlice} from "./slices/apiSlice";
+           reducer > [apiSlice.reducerPath]: apiSlice.reducer,
+
+           middleware: (getDefaultMiddleware) => getDefaultMiddleware.concat(apiSlice.middleware)
+
+HomePage.jsx > import {useGetProductsQuery} from "../slices/productSlice";
+               
+               const {data:products, isLoading, error} = useGetProductsQuery();
+
+               {
+                isLoading ? (<h6>Loading...</h6>) : (<Row></Row)
+               }
+
+ProductPage.jsx > import {useGetProductByIdQuery} from "../slices/productSlice";
+                  
+                  const {data:product, isLoading, error} = useGetProductByIdQuery(id);
+
+                  {
+                    isLoading ? (<h6>Loading...</h6>) : (<Row></Row>)
+                  }
+                       
+
+
+
 
