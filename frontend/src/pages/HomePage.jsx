@@ -6,7 +6,6 @@ import { useGetProductsQuery } from "../slices/productSlice";
 
 const HomePage = () => {
   const { data: products, isLoading, err } = useGetProductsQuery();
-  console.log(products);
   return (
     <>
       <h2>Latest Products</h2>

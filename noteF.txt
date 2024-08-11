@@ -697,6 +697,123 @@ ProductPage.jsx > import {useGetProductByIdQuery} from "../slices/productSlice";
                   }
                        
 
+CLASS 60-Sign In, usersApiSlice, toastify, authSlice, 
+----------------
+components > FormContainer.jsx > import {Col, Container, Row} from "react-bootstrap";
+                                 
+                                 FormContainer = ({children})
+                                 
+                                 <Container>
+                                    <Row className="justify-content-md-center>
+                                      <Col xs={12} md={6}>
+                                        {children}
+                                      </Col>
+                                    </Row>
+                                 </Container> ==> E 
+
+usersApiSlice.js > import {apiSlice} from "./apiSlice";
+                   import {USER_URL} from "../constants";
+
+                   const usersApiSlice = apiSlice.injectEndpoints({
+                    endpoints: (builder) => ({
+                      login: builder.mutation({
+                        query: (data) => ({
+                          url: `${USER_URL}/login`,
+                          methods: "POST",
+                          body: data
+                        })
+                      })
+                    })
+                   })
+
+                   export const {useLoginMutation} = usersApiSlice;
+
+SigninPage.jsx > import {useLoginMutation} from "../slices/usersApiSlice";
+
+                 const [login, {isLoading}] = useLoginMutation();
+
+                 submitHandler > async()
+                                 let resp = await login({email, password}).unwrap();
+
+frontend > Terminal > npm i react-toastify
+
+app.jsx > import {ToastContainer} from "react-toastify";
+          import "react-toastify/dist/ReactToastify.css";
+
+          <ToastContainer/>
+
+Browser > npm > react-toastify
+                documentation
+
+SigninPage.jsx > import {toast} from "react-toastify";
+                
+                sumbitHandler > catch > toast.error(err.data.error);//if you have errorHandlerMiddleware "Error" you fill "err.data.Error"/best idea check console.log(err) than you will find idea.
+
+                                try > toast.success(resp.message);
+
+              
+CartPage.jsx > Checkout > <Link to="/signin?redirect=/shipping" className="btn btn-secondary">Checkout</Link>
+
+slices > authSlice.js > import {createSlice} from "@reduxjs/toolkit";
+                        
+                        const initialState = {
+                          userInfo: localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")): {},//यसमा {} को प्रयोग किन? [] प्रयोग किन नगरेको ? किननकी user login हुदाँ केवल single user को details आउने हुदा [] बनाइराख्नु आवश्यक पर्दैन ।
+                        }
+
+                        const authSlice = createSlice({
+                          name: "auth",
+                          initialState,
+                          reducers: {
+                            setCredentials: (state, action) => { //credentials = प्रमाणहरु
+                              state.userInfo = action.payload;
+                              localStorage.setItem("userInfo", JSON.stringify(state.userInfo))
+                            },
+                            logout: (state, action) => {
+                              state.userInfo = {},
+                              localStorage.removeItem("userInfo")
+                            }
+                          }
+                        });
+
+                        export const {setCredentials, logout} = authSlice.actions;
+
+                        export default authSlice.reducer;
+
+store.js > import authReducer from "./slices/authSlice";
+           
+           reducer > auth: authReducer,
+
+SigninPage > import {setCredentials} from "../slices/authSlice";
+            import {useDispatch} from "react-redux";
+
+            const dispatch = useDispatch();
+             
+             submitHandler > dispatch(setCredentials({resp.user}));
+
+             import {useSelector} from "react-redux";
+
+             const {userInfo} = useSelector(state => state.auth)
+
+             import {useLocation, useNavigate} from "react-router-dom";
+
+             //const location = useLocation()
+             // console.log(locatiion);
+             const {search} = useLocation();
+
+             const sp = new URLSearchParams(search);//new लगायो भने s.p मा get भन्ने key आउछ ।
+             const redirect = sp.get("redirect') || "/";
+
+             import {useEffect} from "react";
+             useEffect(() => {
+              if(userInfo) {
+                navigate(redirect);
+              }
+             })
+
+              
+
+
+
 
 
 

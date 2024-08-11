@@ -3,7 +3,7 @@ import products from "./data/products.js";
 import User from "./models/user.model.js";
 import Product from "./models/product.model.js";
 import connectDB from "./config/db.js";
-import colors from "colors"
+import colors from "colors";
 
 process.loadEnvFile();
 
@@ -31,21 +31,21 @@ const loadData = async () => {
   }
 };
 
-const destroyData = async() => {
-    try{
-        await User.deleteMany();
-        await Product.deleteMany();
-        console.log("Data Cleared!".red.inverse);
-    } catch(err) {
-        console.log(err.message);
-        process.exit(1);
-    }
-}
+const destroyData = async () => {
+  try {
+    await User.deleteMany();
+    await Product.deleteMany();
+    console.log("Data Cleared!".red.inverse);
+  } catch (err) {
+    console.log(err.message);
+    process.exit(1);
+  }
+};
 
 // console.log(process.argv);
 
-if(process.argv[2] === "-d") {
-    destroyData();
+if (process.argv[2] === "-d") {
+  destroyData();
 } else {
-    loadData();
+  loadData();
 }
