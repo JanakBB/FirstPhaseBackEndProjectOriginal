@@ -6,7 +6,9 @@ import { FaTrash } from "react-icons/fa";
 import Message from "../components/Message";
 
 const CartPage = () => {
-  const { cartItems, itemPrice, shippingCharge, totalPrice } = useSelector((state) => state.cart);
+  const { cartItems, itemPrice, shippingCharge, totalPrice } = useSelector(
+    (state) => state.cart
+  );
   const dispatch = useDispatch();
   const cartItemHandler = (item, qty) => {
     dispatch(addToCart({ ...item, qty }));
@@ -74,9 +76,7 @@ const CartPage = () => {
           <ListGroup.Item>
             <Row>
               <Col>Sub Total</Col>
-              <Col>
-                ${itemPrice}
-              </Col>
+              <Col>${itemPrice}</Col>
             </Row>
           </ListGroup.Item>
           <ListGroup.Item>
@@ -88,10 +88,7 @@ const CartPage = () => {
           <ListGroup.Item>
             <Row>
               <Col>Total Price</Col>
-              <Col>
-                $
-                {totalPrice}
-              </Col>
+              <Col>${totalPrice}</Col>
             </Row>
           </ListGroup.Item>
           <ListGroup.Item>

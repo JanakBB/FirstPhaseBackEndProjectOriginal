@@ -14,7 +14,6 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const [userLogout, {isLoading}] = useUserLogoutMutation();
-  console.log(cartItems)
 
   const logoutHandler = async() => {
     try{

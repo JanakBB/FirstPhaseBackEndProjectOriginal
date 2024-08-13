@@ -12,7 +12,9 @@ const HomePage = () => {
       <h2>Latest Products</h2>
       {isLoading ? (
         <h6>Loading...</h6>
-      ) : error ? (<Message variant="danger">{error.data.error}</Message>) : (
+      ) : error ? (
+        <Message variant="danger">{error.data.error}</Message>
+      ) : (
         <Row>
           {products.map((product) => (
             <Col sm={12} md={6} lg={4} xlg={3} key={product._id}>

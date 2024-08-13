@@ -15,17 +15,11 @@ const SigninPage = () => {
     const [login, {isLoading}] = useLoginMutation();
     const dispatch = useDispatch();
 
-    // const location = useLocation();
-    // console.log(location)
     const {search} = useLocation();
     const navigate = useNavigate();
-    // console.log(search)
 
     const sp = new URLSearchParams(search);
-    console.log(sp)
     const redirect = sp.get("redirect") || "/";
-    console.log(redirect)
-
 
   const submitHandler = async(e) => {
     try{

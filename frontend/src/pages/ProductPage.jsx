@@ -11,7 +11,7 @@ const ProductPage = () => {
   let { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { data:product, isLoading, error } = useGetProductByIdQuery(id);
+  const { data: product, isLoading, error } = useGetProductByIdQuery(id);
 
   const addToCartHandler = (item) => {
     dispatch(addToCart(item));
