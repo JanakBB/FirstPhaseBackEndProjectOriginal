@@ -3,9 +3,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { addToCart, removeItem } from "../slices/cartSlice";
 import { FaTrash } from "react-icons/fa";
+import Message from "../components/Message";
 
 const CartPage = () => {
-  const { cartItems } = useSelector((state) => state.cart);
+  const { cartItems, itemPrice, shippingCharge, totalPrice } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const cartItemHandler = (item, qty) => {
     dispatch(addToCart({ ...item, qty }));
@@ -14,7 +15,11 @@ const CartPage = () => {
     dispatch(removeItem(id));
   };
 
-  return (
+  return cartItems.length === 0 ? (
+    <Message>
+      Cart is Empty. <Link to="/">Go Back</Link>
+    </Message>
+  ) : (
     <Row>
       <Col md={8}>
         <ListGroup variant="flush">
@@ -59,49 +64,43 @@ const CartPage = () => {
           ))}
         </ListGroup>
       </Col>
-      {cartItems.length > 0 && (
-        <Col md={4}>
-          <ListGroup>
-            <ListGroup.Item>
-              <h4>
-                Total ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
-                items
-              </h4>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Row>
-                <Col>Sub Total</Col>
-                <Col>
-                  $
-                  {cartItems
-                    .reduce((acc, item) => acc + item.qty * item.price, 0)
-                    .toFixed(2)}
-                </Col>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Row>
-                <Col>Shipping Cost</Col>
-                <Col>${5}</Col>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Row>
-                <Col>Total Price</Col>
-                <Col>
-                  ${(cartItems.reduce(
-                    (acc, item) => acc + item.qty * item.price,
-                    0
-                  ) + 5).toFixed(2)}
-                </Col>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Link to="/signin?redirect=/shipping" className="btn btn-secondary">Checkout</Link>
-            </ListGroup.Item>
-          </ListGroup>
-        </Col>
-      )}
+      <Col md={4}>
+        <ListGroup>
+          <ListGroup.Item>
+            <h4>
+              Total ({cartItems.reduce((acc, item) => acc + item.qty, 0)}) items
+            </h4>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <Row>
+              <Col>Sub Total</Col>
+              <Col>
+                ${itemPrice}
+              </Col>
+            </Row>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <Row>
+              <Col>Shipping Cost</Col>
+              <Col>${shippingCharge}</Col>
+            </Row>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <Row>
+              <Col>Total Price</Col>
+              <Col>
+                $
+                {totalPrice}
+              </Col>
+            </Row>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <Link to="/signin?redirect=/shipping" className="btn btn-secondary">
+              Checkout
+            </Link>
+          </ListGroup.Item>
+        </ListGroup>
+      </Col>
     </Row>
   );
 };

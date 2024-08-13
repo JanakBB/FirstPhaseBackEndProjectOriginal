@@ -9,9 +9,11 @@ function App() {
   return (
     <>
     <Header />
-     <Container className="my-4 p-4">
-       <Outlet />
-     </Container>
+     <main className="my-3">
+      <Container>
+        <Outlet />
+      </Container>
+     </main>
      <Footer/>
      <ToastContainer />
     </>

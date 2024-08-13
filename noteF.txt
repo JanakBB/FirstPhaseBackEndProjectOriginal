@@ -810,7 +810,246 @@ SigninPage > import {setCredentials} from "../slices/authSlice";
               }
              })
 
+conclusion of Class 60
+----------------------
+कुन कुन steps चालिएको छ ?
+‍‍=> CartPage को Checkout मा click गर्दा यदि कुनै पनि user login छैन भने at first login हुनुपर्ने र त्यसपछि सिधै shipping page redirect हुनु पर्ने,
+‍=> कुनै पनि user ले सुरुवात मै login गरेको छ भने HomePage मा redirect हुनुपर्ने,
+
+CartPage को  Checkout बाट सिधै shipping page मा redirect हुदा under the hood कुन कुन कार्य भएको हुन्छ ?
+‍=> CartPage: to="/login?redirect=/shipping
+=> SigninPage मा रहेको login Form को गतिविधिः
+   ---------------------------------------
+   <input
+      type="email"
+      value={email}  //const [email, setEmail] = useState();
+      onChange={e => setEmail(e.target.value)}
+    /> 
+
+    <input
+       type="password"
+       value={password}  //const [password, setPassword] = useState();
+       onChange={e => setPassword(e.target.value)}
+    />
+
+    <form onSubmit={submitHandler}>
+      <button type="button">Log in</button>
+    </form>
+
+=> submitHandler  को गतिविधिः
+   ------------------------
+   const submitHandler = async(e) => {
+    e.preventDefault();
+    const resp = await login({email, password}) //login आवश्यक छ !
+    dispatch(setCredentials(resp.user)) //dispatch, setCredentials र resp.user आवश्यक छ ।
+   }
+
+   login को आवश्यकता परिपुर्तिः
+   ------------------------
+   usersApiSlice ले गर्छ > import {apiSlice} from "./apiSlice";
+                         
+                         const usersApiSlice = injectEndpoints({
+                          endpoints: (builder) => ({
+                            login: builder.mutation({
+                              query: (data) => ({
+                                url: `${USER_URL}/login`,
+                                method: "POST",
+                                body: data
+                              })
+                            })
+                          })
+                         })
+
+                         export const {useLoginMutation} = usersApiSlice
+
+  import {useLoginMutation} from "../slices/usersApiSlice";
+  const [login, {isLoading}] = useLoginMutation(); //यो line बाट login लिन्छ ।
+
+  resp.user को आवश्यकता परिपुर्तिः
+  ----------------------------
+  const resp = await login({email, password}) hit हुन जान्छ जब Log in Button मा click गर्छौ,
+  login api call हुन जान्छ र backend को controller > user.controller.js > login मा hit हुन जान्छ,
+  const login = asyncHandler(async(req, res) => {
+    let {email, passwod} ‍= res.body;
+    let user = await User.findOne({email});
+    if(!user) throw new ApiError(404, "Email is not exist!);
+    
+    if(await user.matchPassword(password)){
+      createToken(res, user_id)
+      res.send({
+        message: "Login Success !",
+        user: {
+          name: user.name,
+          email: user.email,
+          isAdmin: user.isAdmin
+        }
+      })
+    }
+  })
+
+  setCredentials को आवश्यकताको परिपुर्तिः
+  -----------------------------------
+  यो प्राप्त गर्न authSice बनाउनु पर्छ, यो login user को state manage गर्ने काम गर्छ 
+  import {createSlice} form "@reduxjs/toolkit";
+
+  const initialState = {
+    userInfo: localStorage.setItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")) : null,
+  }
+
+  const authSlice = createSlice({
+    name: "auth",
+    initialState,
+    reducers: {
+      setCredintials: (state, action) => {
+        state.userInfo = action.payload;
+        localStorage.setItem("userInfo", JSON.stringify(state.userInfo));
+      }
+      logout: (state, action) => {
+        state.userInfo: {};
+        localStorage.setItem("userInfo", JSON.stringify(state.userInfo));
+      }
+    }
+  })
+
+  export const {setCredentials} = authSlice.actions;
+  export default authSlice.reducer;
+
+यि माथिका सबै गतिविधि submitHandler function call हुदा आवश्यक पर्ने तत्वहरु हुन, यो function ले गर्ने भनेको केवल login api call, get user info and set into store
+
+के Log in Button मा click गर्दैमा login भएर तोकिएको कार्य(820) बन्छ होला त?
+‍=> हुदैन, 820 को कार्य हुन्छ जब useEffect ले तोकिएको कार्य गर्न पाइरहन्छ ।
+
+त्यसो भए 820(to="/login?redirect=/shipping") को कार्य गर्न के गर्ने अब ?
+----------------------------------------------------------------
+=> हामीले dispatch(setCredentails(resp.user)) को माध्यमबाट store मा जुन data store गरेका छौ त्यो data get गर्नु पर्छ,
+   const {userInfo} = useSelector(state => state.auth) //auth comes from store.js > reducer
+
+   useEffect(() => {
+    if(userInfo) { //userInfo त हामीले प्राप्त गरिसक्यौ ।
+      navigate(redirect) //navigate र redirect आवश्यक छ ।
+    }
+   }, [userInfo, navigate, redirect])
+
+   navigate को परिपुर्तिः
+   -----------------
+   import {useNavigate} from "react-router-dom";
+   const navigate = useNavigate();
+
+   redirect को परिपुर्तिः
+   ------------------
+   import {useLocation} from "react-router-dom";
+   //const location = useLocation()
+   //console.log(location) //outcome: path: "abcd', search: "?redirect=/shipping", etc
+   so, {search} = useLocation();
+
+   const sp = new URLSearchParams(search);
+   const redirect = sp.get("redirect") || "/";
+
+useEffect को असरः
+-----------------
+जब सम्म dependency मा रहेका userInfo, navigate, redirect को movement मा हलचल आइरहन्छ त्यो बेला सम्म आवश्यकतानुसार shipping page वा Homepage मा redirect भइरहन्छ ।
+
+अर्थात, यदि कुनै user log in नभई Checkout गर्न खोज्छ भने to="/login?redirect=/shipping" को कारण search location मा ?redirect=/shipping आउछ र redirect variable मा new URLSearchParams.get("redirect") || "/" को सहायताले /shipping आउन जान्छ र navigate("/shipping") हुन्छ ।
+
+यदि कुनै user Checkout मा नगई सिधै login गर्छ भने माथिको प्रकियालले फेल खान्छ र redirect variable मा "/" आउन जान्छ र navigate("/") Homepage मा हुन्छ ।
+
+Login Button मा click गर्दा भन्दा पनि त्यो click कारण उत्पन्न हुने userIfno र react-router-dom को माध्यमबाट create गरिएको redirect को प्रयोग गरि अपनाइएको useEffect को माध्यमबाट Checkout to login to shipping र login to HomePage मा shift भएको हो ।
+
+
+CLASS 61-Frontend Auth and Place Order setProduct
+-------------------------------------------------
+Project + Frontend > Terminal > npm i -D concurrently
+                    
+                     package.json > "scripts": {
+                                       "server": "nodemon --env-file=.env backend/index.js",
+                                       "client": "npm run dev --prefix=frontend",
+                                       "dev": "concurrently \"npm run server\" \"npm run client\"",
+                                      }
+
+Header.jsx > import {userInfo} = useSelector(state => state.auth);
+
+             Log in > {
+                       !userInfo ? (
+                        <NavLink to="/singin" className="nav-link">
+                          Signin
+                        </NavLink>
+                       ) : ( 
+                        <NavDropdown title={userInfo.name}>
+                          <NavDropdown.Item>Profile</NavDropdown.Item>
+                          <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
+                        </NavDropdown>
+                       )
+                      }
+
+             Logout > shortcurt(
+                      dispatch(logout()) //localStorage(empty)
+                      )
+
+                      usersApiSlice > endPoints > builder > userLogout : builder.mutation({
+                        query: () => ({
+                          url: `${USER_URL}/logout`,
+                          method: "POST",
+                        })
+                      })
+
+                      export const {useUserLogoutMutation} = usersApiSlice;
+
+              import {useUserLogoutMutation} from "../slices/usersApiSlice";
+              import {logout} from "../slices/authSlice";
+
+              logoutHandler > resp = await userLogout().unwrap();
+                              dispathc(logout())
+                              toast.success(resp.message);
+                              navigate("/signin")
+
+components > Message.jsx > const Message = ({variant, children}) => {
+                                             return(
+                                              <Alert variant={variant}>
+                                                {children}
+                                              </Alert>
+                                             ) 
+                                            }
+
+                           Message.defaultProps = { 
+                            variant: "primary"
+                           }
+
+                           export default Message;
+
+CartPage.jsx > import Message from "../components/Message";
               
+              {cartItems.length === 0 ? (<Message>Cart is empty. <Link to="/">Go Back</Link></Message>) : <Row></Row>}   
+
+HomePage.jsx > import Message from "../components/Message";
+
+               {
+                isLoading ?
+                 <h6>Loading...</h6>
+                  : error ? 
+                  (<message variant="danger">
+                    {error.data.error}
+                   </Message>) : (
+                    <Row></Row>
+                   )
+               }       
+               
+components > PrivateRouter.jsx > import {Outlet, navigate} from "react-router-dom";
+                                 import {useSelector} from "react-redux";
+
+                                 const PrivateRouter = () => {
+                                  const {userInfo} = useSelector(state => state.auth);
+                                  return userInfo ? <Outlet/> : <Navigate to="/" /> // ProviteRouter भित्र Outlet छ भन्नुको अर्थ parent element को भित्र जुन element रहेको छ त्यही element render हुन्छ भन्नु हो । जसरी App component भित्र Outlet रहेको छ भन्नुको अर्थ Route मा App parent element हो र App भित्र जति पनि element रहेका छन् , ति सबै Outlet को रुपमा रहेका हुन्छन् र App render हुदा App भित्रै render हुन्छन् । PrivateRouter ले Outlet return गर्नु भनेको पनि यदि PrivateRouter लाई parent element मानेर कुनै पनि element लाई त्यसको children को रुपमा राख्ने हो भने त्यो त्यसको Outlet को रुपमा render हुन्छ ।
+                                  userInfo छैन भने login छैन भन्नु सरह कै हो, false भयो भने Navigate ले singin मा redirect गरिदिन्छ ।
+                                 }
+
+                                 export default PrivateRouter;
+                           
+                              
+
+
+
+
+
 
 
 

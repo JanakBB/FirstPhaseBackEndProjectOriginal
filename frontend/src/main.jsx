@@ -10,6 +10,8 @@ import CartPage from "./pages/CartPage.jsx";
 import SigninPage from "./pages/SigninPage.jsx";
 import {Provider} from "react-redux";
 import { store } from './store.js';
+import Shipping from './pages/ShippingPage.jsx';
+import PrivateRouter from './components/PrivateRouter.jsx';
 
 const router = createBrowserRouter(createRoutesFromElements(
   <Route path="" element={<App/>}>
@@ -17,6 +19,9 @@ const router = createBrowserRouter(createRoutesFromElements(
       <Route path="/product/:id" element={<ProductPage/>} />
       <Route path="/cart" element={<CartPage/>} />
       <Route path="/signin" element={<SigninPage/>} />
+      <Route path="" element={<PrivateRouter/>}>
+        <Route path="/shipping" element={<Shipping/>} />
+      </Route>
   </Route>
 ))
 
