@@ -10,6 +10,7 @@ const CartPage = () => {
     (state) => state.cart
   );
   const dispatch = useDispatch();
+
   const cartItemHandler = (item, qty) => {
     dispatch(addToCart({ ...item, qty }));
   };

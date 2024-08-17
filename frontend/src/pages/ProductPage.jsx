@@ -90,7 +90,8 @@ const ProductPage = () => {
             </ListGroup>
           </Col>
         </Row>
-      )}
+      )
+      }
     </>
   );
 };

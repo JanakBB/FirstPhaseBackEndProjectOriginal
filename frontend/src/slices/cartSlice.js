@@ -28,6 +28,10 @@ const cartSlice = createSlice({
       );
       updateCart(state);
     },
+    removeCartItem: (state, action) => {
+      state.cartItems = [];
+      updateCart(state)
+    },
     saveShippingAddress: (state, action) => {
       state.shippingAddress = action.payload;
       updateCart(state);
@@ -35,6 +39,6 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addToCart, removeItem, saveShippingAddress } = cartSlice.actions;
+export const { addToCart, removeItem, saveShippingAddress, removeCartItem } = cartSlice.actions;
 
 export default cartSlice.reducer;

@@ -90,15 +90,32 @@ const getUserProfile = asyncHandler(async (req, res) => {
 // @route /api/v1/users/profile
 // @access private
 const updateUserProfile = asyncHandler(async (req, res) => {
+  console.log(req.body)
   if (req.user) {
     let user = await User.findById(req.user._id);
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
-    if (req.body.password) {
-      user.password = req.body.password;
-    }
-    let updatedUser = await user.save();
-    res.send({ message: "User profile updated", user: updatedUser });
+
+       if(await user.matchPassword(req.body.currentPassword)){
+        if (req.body.password) {
+          user.password = req.body.password;
+        }
+
+        let updatedUser = await user.save();
+
+        res.send({
+          message: "User profile updated",
+          user: {
+            name: updatedUser.name,
+            email: updatedUser.email,
+            isAdmin: updatedUser.isAdmin,
+          },
+        });
+       } else {
+        throw new ApiError(404, "Current Password is not matched!");
+       }
+      
+
   }
 });
 

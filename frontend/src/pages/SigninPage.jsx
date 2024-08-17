@@ -14,13 +14,12 @@ const SigninPage = () => {
     const [password, setPassword] = useState();
     const [login, {isLoading}] = useLoginMutation();
     const dispatch = useDispatch();
-
-    const {search} = useLocation();
     const navigate = useNavigate();
-
+    
+    const {search} = useLocation();
     const sp = new URLSearchParams(search);
     const redirect = sp.get("redirect") || "/";
-
+    
   const submitHandler = async(e) => {
     try{
         e.preventDefault();

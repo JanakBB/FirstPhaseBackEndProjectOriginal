@@ -956,7 +956,7 @@ useEffect को असरः
 Login Button मा click गर्दा भन्दा पनि त्यो click कारण उत्पन्न हुने userIfno र react-router-dom को माध्यमबाट create गरिएको redirect को प्रयोग गरि अपनाइएको useEffect को माध्यमबाट Checkout to login to shipping र login to HomePage मा shift भएको हो ।
 
 
-CLASS 61-Frontend Auth and Place Order setProduct
+CLASS 61-Logout, Alert Message, Profile name, ShippingPage Intro, PrivateRouter
 -------------------------------------------------
 Project + Frontend > Terminal > npm i -D concurrently
                     
