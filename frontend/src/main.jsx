@@ -15,6 +15,8 @@ import PrivateRouter from './components/PrivateRouter.jsx';
 import PlaceOrderPage from './pages/PlaceOrderPage.jsx';
 import OrderPage from './pages/OrderPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
+import AdminRoute from './components/AdminRouter.jsx';
+import OrderListPage from './pages/admin/OrderListPage.jsx';
 
 const router = createBrowserRouter(createRoutesFromElements(
   <Route path="" element={<App/>}>
@@ -27,6 +29,9 @@ const router = createBrowserRouter(createRoutesFromElements(
         <Route path="/placeorder" element={<PlaceOrderPage/>} />
         <Route path='/order/:id' element={<OrderPage/>} />
         <Route path='/profile' element={<ProfilePage/>} />
+      </Route>
+      <Route path='' element={<AdminRoute/>}>
+        <Route path='admin/orders' element={<OrderListPage/>} />
       </Route>
   </Route>
 ))

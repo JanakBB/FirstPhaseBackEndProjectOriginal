@@ -14,7 +14,6 @@ const ProfilePage = () => {
   const [updateUserProfile, { isLoading: updateProfileLoading }] =
     useUpdateUserProfileMutation();
   const { data: orders, isLoading: ordersLoading, error } = useGetMyOrdersQuery();
-  console.log(orders)
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");

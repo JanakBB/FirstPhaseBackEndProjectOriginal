@@ -8,10 +8,10 @@ const addOrder = asyncHandler(async (req, res) => {
   let order = await Order.create({
     orderItems: orderItems.map((item) => ({
       ...item,
-      product: item._id, //product create गर्दाको id
+      product: item._id,
       _id: undefined,
     })),
-    user: req.user._id, //user signup गर्दाको id
+    user: req.user._id,
     shippingAddress,
     itemPrice,
     shippingCharge,
@@ -20,7 +20,7 @@ const addOrder = asyncHandler(async (req, res) => {
   res.send({
     message: "Order created with id " + order._id,
     orderId: order._id,
-  }); //order create गर्दाको id
+  });
 });
 
 const getOrders = asyncHandler(async (req, res) => {
@@ -45,4 +45,20 @@ const getMyOrders = asyncHandler(async (req, res) => {
   res.send(orders);
 });
 
-export { addOrder, getOrders, getOrderById, getMyOrders };
+const changeOrderStatus = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  const status = req.body.status;
+  let order = await Order.findById(id);
+  if (!order) throw new ApiError(404, "Order not found!");
+  order.status = status;
+  if (status === "delivered") {
+    order.isDelivered = true;
+    order.isPaid = true;
+    order.deliveredAt = Date.now();
+  }
+
+  await order.save();
+  res.send({ message: "Order status changed " + status });
+});
+
+export { addOrder, getOrders, getOrderById, getMyOrders, changeOrderStatus };

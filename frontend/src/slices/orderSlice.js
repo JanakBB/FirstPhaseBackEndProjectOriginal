@@ -11,16 +11,34 @@ export const orderSlice = apiSlice.injectEndpoints({
       }),
     }),
     getOrderById: builder.query({
-      query:(id) => ({
-        url: `${ORDER_URL}/${id}`
-      })
+      query: (id) => ({
+        url: `${ORDER_URL}/${id}`,
+      }),
     }),
     getMyOrders: builder.query({
-      query:() => ({
-        url: `${ORDER_URL}/myorders`
-      })
-    })
+      query: () => ({
+        url: `${ORDER_URL}/myorders`,
+      }),
+    }),
+    getAllOrders: builder.query({
+      query: () => ({
+        url: ORDER_URL,
+      }),
+    }),
+    changeStatus: builder.mutation({
+      query: (data) => ({
+        url: `${ORDER_URL}/${data.id}/changestatus`,
+        method: "PUT",
+        body: data.body,
+      }),
+    }),
   }),
 });
 
-export const { usePlaceOrderMutation, useGetOrderByIdQuery, useGetMyOrdersQuery } = orderSlice;
+export const {
+  usePlaceOrderMutation,
+  useGetOrderByIdQuery,
+  useGetMyOrdersQuery,
+  useGetAllOrdersQuery,
+  useChangeStatusMutation,
+} = orderSlice;

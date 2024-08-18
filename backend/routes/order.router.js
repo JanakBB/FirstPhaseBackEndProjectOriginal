@@ -1,6 +1,7 @@
 import express from "express";
 import {
   addOrder,
+  changeOrderStatus,
   getMyOrders,
   getOrderById,
   getOrders,
@@ -13,5 +14,6 @@ router.get("/", checkAuth, checkAdmin, getOrders);
 router.post("/addorder", checkAuth, addOrder);
 router.get("/myorders", checkAuth, getMyOrders);
 router.get("/:id", checkAuth, getOrderById);
+router.put("/:id/changestatus", checkAuth, checkAdmin, changeOrderStatus)
 
 export default router;

@@ -7,24 +7,25 @@ import { useDispatch } from "react-redux";
 import { logout } from "../slices/authSlice";
 import { toast } from "react-toastify";
 import { useUserLogoutMutation } from "../slices/usersApiSlice";
+import {LinkContainer} from "react-router-bootstrap";
 
 const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
-  const {userInfo} = useSelector(state => state.auth);
+  const { userInfo } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const navigate = useNavigate()
-  const [userLogout, {isLoading}] = useUserLogoutMutation();
+  const navigate = useNavigate();
+  const [userLogout, { isLoading }] = useUserLogoutMutation();
 
-  const logoutHandler = async() => {
-    try{
+  const logoutHandler = async () => {
+    try {
       let resp = await userLogout().unwrap();
-      dispatch(logout())
+      dispatch(logout());
       toast.success(resp.message);
       navigate("/signin");
-    } catch(err) {
-      toast.error(err.data.error)
+    } catch (err) {
+      toast.error(err.data.error);
     }
-  }
+  };
   return (
     <Navbar variant="dark" bg="dark" expand="md" collapseOnSelect>
       <Container>
@@ -36,26 +37,43 @@ const Header = () => {
           <Nav className="ms-auto">
             <NavLink to="/cart" className="nav-link">
               <FaShoppingCart /> Cart
-              {(cartItems.length) > 0 && (
+              {cartItems.length > 0 && (
                 <Badge bg="success" pill>
                   {cartItems.reduce((acc, item) => acc + item.qty, 0)}
                 </Badge>
               )}
             </NavLink>
             {!userInfo ? (
-                          <NavLink to="/signin" className="nav-link">
-                           <FaUser /> Signin
-                          </NavLink>
+              <NavLink to="/signin" className="nav-link">
+                <FaUser /> Signin
+              </NavLink>
             ) : (
               <NavDropdown title={userInfo.name}>
-                  <NavDropdown.Item onClick={() => {navigate("/profile")}}>Profile</NavDropdown.Item>
-                  <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
+                <NavDropdown.Item
+                  onClick={() => {
+                    navigate("/profile");
+                  }}
+                >
+                  Profile
+                </NavDropdown.Item>
+                <NavDropdown.Item onClick={logoutHandler}>
+                  Logout
+                </NavDropdown.Item>
               </NavDropdown>
             )}
+            {
+              userInfo && userInfo.isAdmin && (
+                <NavDropdown title="admin">
+                  <LinkContainer to="/admin/orders">
+                  <NavDropdown.Item>Orders</NavDropdown.Item>
+                  </LinkContainer>
+                </NavDropdown>
+              )
+            }
           </Nav>
         </Navbar.Collapse>
       </Container>
-    </Navbar> 
+    </Navbar>
   );
 };
 
