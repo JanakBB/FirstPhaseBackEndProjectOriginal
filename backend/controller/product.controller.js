@@ -26,7 +26,18 @@ const getProductById = asyncHandler(async(req, res) => {
 // @route /api/v1/products
 // @access public
 const addProduct = asyncHandler(async(req, res) => {
-    let product = await Product.create({...req.body, user: req.user._id});
+    // let product = await Product.create({...req.body, user: req.user._id});
+    let product = await Product.create({
+        user: req.user._id,
+        name: "Sample Name",
+        description: "Sample Description",
+        brand: "Sample Brand",
+        category: "Sample Category",
+        image: "/images/sample.jpg",
+        rating: 0,
+        price: 0,
+        countInStock: 0
+    })
     res.send({message: "Product added successfully!", product});
 });
 
@@ -39,7 +50,7 @@ const updateProduct = asyncHandler(async(req, res) => {
     if(!product) throw new ApiError(404, "Product not found!");
     product.name = req.body.name || product.name;
     product.description = req.body.description || product.description;
-    product.image = req.body.image || product.image;
+    // product.image = req.body.image || product.image;
     product.brand = req.body.brand || product.brand;
     product.category = req.body.category || product.category;
     product.price = req.body.price || product.price;
