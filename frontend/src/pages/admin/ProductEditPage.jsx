@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useGetProductByIdQuery, useUpdateProductMutation } from "../../slices/productSlice";
+import {
+  useGetProductByIdQuery,
+  useUpdateProductMutation,
+  useUploadProductImageMutation,
+} from "../../slices/productSlice";
 import FormContainer from "../../components/FormContainer";
 import { Button, Form, FormGroup } from "react-bootstrap";
 import Message from "../../components/Message";
@@ -18,8 +22,10 @@ const ProductEditPage = () => {
 
   const { id } = useParams();
   const { data: product, isLoading, error } = useGetProductByIdQuery(id);
-  const [updateProduct, {isLoading: productUpdateLoading}] = useUpdateProductMutation();
+  const [updateProduct, { isLoading: productUpdateLoading }] =
+    useUpdateProductMutation();
   const navigate = useNavigate();
+  const [uploadProductImage, {isLoading: imagetUpdateLoading}] = useUploadProductImageMutation();
 
   useEffect(() => {
     if (product) {
@@ -32,24 +38,37 @@ const ProductEditPage = () => {
     }
   }, [product]);
 
-  const updateProductHandler = async(e) => {
+  const updateProductHandler = async (e) => {
     e.preventDefault();
-    try{
-    let resp = await updateProduct({
+    try {
+      let resp = await updateProduct({
         _id: product._id,
-        name, 
+        name,
         brand,
+        image,
         category,
         price,
         countInStock,
         description,
-    }).unwrap();
-    toast.success(resp.message)
-    navigate("/admin/products");
-    } catch(err) {
-        toast.error(err.data.error);
+      }).unwrap();
+      toast.success(resp.message);
+      navigate("/admin/products");
+    } catch (err) {
+      toast.error(err.data.error);
     }
-  }
+  };
+
+  const uploadImageHandler = async (e) => {
+    try{
+      let formData = new FormData();
+      formData.append("image", e.target.files[0])
+      let resp = await uploadProductImage(formData).unwrap();
+      setImage(resp.filepath);
+      toast.success(resp.message);
+    } catch(err) {
+      toast.error(err.data.error)
+    }
+  };
 
   return (
     <>
@@ -85,6 +104,14 @@ const ProductEditPage = () => {
                 onChange={(e) => setCategory(e.target.value)}
               />
             </FormGroup>
+            <FormGroup controlId="image" className="my-2">
+              <Form.Label>Image</Form.Label>
+              <Form.Control
+                type="file"
+                onChange={uploadImageHandler}
+                multiple
+              />
+            </FormGroup>
             <FormGroup controlId="price" className="my-2">
               <Form.Label>Price</Form.Label>
               <Form.Control
@@ -110,7 +137,9 @@ const ProductEditPage = () => {
                 onChange={(e) => setDescription(e.target.value)}
               />
             </FormGroup>
-            <Button variant="dark" className="my-2" type="submit">Update</Button>
+            <Button variant="dark" className="my-2" type="submit">
+              Update
+            </Button>
           </Form>
         </FormContainer>
       )}

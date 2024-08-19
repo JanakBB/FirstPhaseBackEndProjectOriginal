@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
 import asyncHandler from "../middleware/asynchandler.middleware.js";
+import ApiError from "../utils/apiError.js";
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ const storage = multer.diskStorage({
 const fileFilter = (req, file, cb) => {
   let filePattern = /\.(jpg|jpeg|png|webp)$/;
   if (!file.originalname.match(filePattern)) {
-    cb("Only image file supported", false);
+    cb(new ApiError(404, "Only image file supported"), false);
   } else {
     cb(null, true);
   }
@@ -34,7 +35,7 @@ router.post(
   asyncHandler(async (req, res) => {
     res.send({
         message: "Image Uploaded!",
-        filepath: req.file.path,
+        filepath: `${req.file.path}`,
     })
   })
 );

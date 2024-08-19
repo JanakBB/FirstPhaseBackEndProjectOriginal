@@ -50,7 +50,7 @@ const updateProduct = asyncHandler(async(req, res) => {
     if(!product) throw new ApiError(404, "Product not found!");
     product.name = req.body.name || product.name;
     product.description = req.body.description || product.description;
-    // product.image = req.body.image || product.image;
+    product.image = req.body.image || product.image;
     product.brand = req.body.brand || product.brand;
     product.category = req.body.category || product.category;
     product.price = req.body.price || product.price;
