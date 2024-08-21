@@ -8,9 +8,13 @@ import {
 } from "../../slices/productSlice";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import Paginate from "../../components/Paginate";
 
 const ProductListPage = () => {
-  const { data: products, isLoading, error } = useGetProductsQuery();
+  const {pageNumber} = useParams()
+  console.log(pageNumber)
+  const { data, isLoading, error } = useGetProductsQuery({pageNumber});
   const [addProduct, { isLoading: productLoading }] = useAddPfoductMutation();
   const [deleteProduct, { isLoading: deleteLoading }] =
     useDeleteProductMutation();
@@ -51,6 +55,7 @@ const ProductListPage = () => {
       ) : error ? (
         <Message variant="danger">{error.data.error}</Message>
       ) : (
+        <>
         <Table>
           <thead>
             <tr>
@@ -64,7 +69,7 @@ const ProductListPage = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
+            {data.products.map((product) => (
               <tr key={product._id}>
                 <td>{product._id}</td>
                 <td>{product.name}</td>
@@ -95,6 +100,8 @@ const ProductListPage = () => {
             ))}
           </tbody>
         </Table>
+        <Paginate pageNumber={data.pageNumber} pages={data.pages} admin={true}/>
+        </>
       )}
     </>
   );

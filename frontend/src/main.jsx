@@ -23,6 +23,7 @@ import ProductEditPage from './pages/admin/ProductEditPage.jsx';
 const router = createBrowserRouter(createRoutesFromElements(
   <Route path="" element={<App/>}>
       <Route path="" element={<HomePage/>} />
+      <Route path="page/:pageNumber" element={<HomePage/>} />
       <Route path="/product/:id" element={<ProductPage/>} />
       <Route path="/cart" element={<CartPage/>} />
       <Route path="/signin" element={<SigninPage/>} />
@@ -35,6 +36,7 @@ const router = createBrowserRouter(createRoutesFromElements(
       <Route path='' element={<AdminRoute/>}>
         <Route path='admin/orders' element={<OrderListPage/>} />
         <Route path="admin/products" element={<ProductListPage/>} />
+        <Route path="admin/products/page/:pageNumber" element={<ProductListPage/>} />
         <Route path='admin/product/:id/edit' element={<ProductEditPage />} />
       </Route>
   </Route>
