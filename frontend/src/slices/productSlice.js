@@ -20,13 +20,13 @@ const productSlice = apiSlice.injectEndpoints({
         url: `${PRODUCT_URL}`,
         method: "POST",
       }),
-      invalidatesTags: ["Product"]
+      invalidatesTags: ["Product"],
     }),
     updateProduct: builder.mutation({
       query: (product) => ({
         url: `${PRODUCT_URL}/${product._id}`,
         method: "PUT",
-        body: product
+        body: product,
       }),
       invalidatesTags: ["Product"],
     }),
@@ -34,10 +34,39 @@ const productSlice = apiSlice.injectEndpoints({
       query: (data) => ({
         url: UPLOAD_URL,
         method: "POST",
-        body: data
-      })
-    })
+        body: data,
+      }),
+    }),
+    deleteProduct: builder.mutation({
+      query: (id) => ({
+        url: `${PRODUCT_URL}/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Product"],
+    }),
+    addReview: builder.mutation({
+      query: (data) => ({
+        url: `${PRODUCT_URL}/addreview/${data._id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Product"],
+    }),
+    checkReviewStatus: builder.query({
+      query: (id) => ({
+        url: `${PRODUCT_URL}/${id}/check-review-status`,
+      }),
+    }),
   }),
 });
 
-export const { useGetProductsQuery, useGetProductByIdQuery, useAddPfoductMutation, useUpdateProductMutation, useUploadProductImageMutation } = productSlice;
+export const {
+  useGetProductsQuery,
+  useGetProductByIdQuery,
+  useAddPfoductMutation,
+  useUpdateProductMutation,
+  useUploadProductImageMutation,
+  useDeleteProductMutation,
+  useAddReviewMutation,
+  useCheckReviewStatusQuery,
+} = productSlice;

@@ -1,6 +1,7 @@
 import asyncHandler from "../middleware/asynchandler.middleware.js";
 import Product from "../models/product.model.js";
 import ApiError from "../utils/apiError.js";
+import Order from "../models/order.model.js";
 
 // @desc get all products
 // @route /api/v1/products
@@ -96,8 +97,27 @@ const addUserReview = asyncHandler(async(req, res) => {
     
     await product.save();
     res.send({message: "Review added to product"});
+});
+
+const canBeReviewed = asyncHandler(async(req, res) => {
+    let eligible = false;
+    let productId = req.params.id;
+    let userId = req.user._id;
+    let orders = await Order.find({user: userId, isDelivered: true});
+    orders.forEach(order => {
+        let productOrder = order.orderItems.find(item => item.product == productId);
+        if(productOrder) {
+            eligible = true
+        }
+    });
+
+    if(eligible){
+        res.send({canBeReviewed: true})
+    } else {
+        res.send({canBeReviewed: false})
+    }
 })
 
-export {getProducts, getProductById, addProduct, updateProduct, deleteProduct, addUserReview} ;
+export {getProducts, getProductById, addProduct, updateProduct, deleteProduct, addUserReview, canBeReviewed} ;
 
 

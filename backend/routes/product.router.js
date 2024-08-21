@@ -2,6 +2,7 @@ import express from "express";
 import {
   addProduct,
   addUserReview,
+  canBeReviewed,
   deleteProduct,
   getProductById,
   getProducts,
@@ -17,7 +18,8 @@ router
   .get(getProductById)
   .put(checkAuth, checkAdmin, updateProduct)
   .delete(checkAuth, checkAdmin, deleteProduct);
-router.put("/addreview/:id", checkAuth, addUserReview)
+router.put("/addreview/:id", checkAuth, addUserReview);
+router.get("/:id/check-review-status", checkAuth, canBeReviewed);
 
 
   export default router;

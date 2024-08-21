@@ -3,6 +3,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import Message from "../../components/Message";
 import {
   useAddPfoductMutation,
+  useDeleteProductMutation,
   useGetProductsQuery,
 } from "../../slices/productSlice";
 import { toast } from "react-toastify";
@@ -11,6 +12,8 @@ import { Link } from "react-router-dom";
 const ProductListPage = () => {
   const { data: products, isLoading, error } = useGetProductsQuery();
   const [addProduct, { isLoading: productLoading }] = useAddPfoductMutation();
+  const [deleteProduct, { isLoading: deleteLoading }] =
+    useDeleteProductMutation();
 
   const addProductHandler = async () => {
     try {
@@ -18,6 +21,17 @@ const ProductListPage = () => {
       toast.success(resp.message);
     } catch (err) {
       toast.error(err.data.error);
+    }
+  };
+
+  const deleteProductHandler = async (id) => {
+    if (window.confirm("Are you sure you want to delete?")) {
+      try {
+        let resp = await deleteProduct(id).unwrap();
+        toast.success(resp.message);
+      } catch (err) {
+        toast.error(err.data.error);
+      }
     }
   };
   return (
@@ -67,7 +81,13 @@ const ProductListPage = () => {
                   >
                     <FaEdit />
                   </Button>
-                  <Button size="sm" variant="danger" className="mx-2">
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    className="mx-2"
+                    onClick={() => deleteProductHandler(product._id)}
+                    disabled={deleteLoading}
+                  >
                     <FaTrash style={{ color: "white" }} />
                   </Button>
                 </td>

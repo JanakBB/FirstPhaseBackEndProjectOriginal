@@ -26,6 +26,7 @@ const ProductEditPage = () => {
     useUpdateProductMutation();
   const navigate = useNavigate();
   const [uploadProductImage, {isLoading: imagetUpdateLoading}] = useUploadProductImageMutation();
+  
 
   useEffect(() => {
     if (product) {
