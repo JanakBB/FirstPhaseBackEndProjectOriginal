@@ -7,10 +7,27 @@ import Order from "../models/order.model.js";
 // @route /api/v1/products
 // @access public
 const getProducts = asyncHandler(async(req, res) => {
-    const productPageSize = 2;//Product componet in one page
+    const productPageSize = 3;//Product componet in one page
     let pageNumber = Number(req.query.pageNumber) || 1;//changable
-    let totalProductCount = await Product.countDocuments();
-    let products = await Product.find({}).limit(productPageSize).skip(productPageSize * (pageNumber -1));//pageNumber 1 = (2 * (1-1)) = skip 0 Product component, if pageNumber 2 = (2 * (2-1)) = skip 2 Product component skip, if pageNumber 3 = (2 * (3-1)) = skip 4 Product component
+    let keyword = req.query.keyword;
+    keyword = keyword ? {
+        $or: [
+            {
+                name: {
+                    $regex: keyword,
+                    $options: "i"
+                }
+            },
+            {
+                description: {
+                    $regex: keyword,
+                    $options: "i"
+                }
+            }
+        ]
+    } : {};
+    let totalProductCount = await Product.countDocuments({...keyword});
+    let products = await Product.find({...keyword}).limit(productPageSize).skip(productPageSize * (pageNumber -1));//pageNumber 1 = (2 * (1-1)) = skip 0 Product component, if pageNumber 2 = (2 * (2-1)) = skip 2 Product component skip, if pageNumber 3 = (2 * (3-1)) = skip 4 Product component
     res.send({products, pageNumber, pages: Math.ceil(totalProductCount/productPageSize)});
 });
 
@@ -121,6 +138,11 @@ const canBeReviewed = asyncHandler(async(req, res) => {
     }
 })
 
-export {getProducts, getProductById, addProduct, updateProduct, deleteProduct, addUserReview, canBeReviewed} ;
+const getTopProducts = asyncHandler(async(req, res) => {
+    const products = await Product.find({}).sort({rating: -1}).limit(3);//sort based on rating and  -1: descending order
+    res.send(products);
+})
+
+export {getProducts, getProductById, addProduct, updateProduct, deleteProduct, addUserReview, canBeReviewed, getTopProducts} ;
 
 

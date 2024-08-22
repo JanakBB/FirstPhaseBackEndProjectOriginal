@@ -6,13 +6,17 @@ import { useGetProductsQuery } from "../slices/productSlice";
 import Message from "../components/Message";
 import { useParams } from "react-router-dom";
 import Paginate from "../components/Paginate";
+import ProductCarousel from "../components/ProductCarousel";
+import Meta from "../components/Meta";
 
 const HomePage = () => {
-  const {pageNumber} = useParams();
-  const { data, isLoading, error } = useGetProductsQuery({pageNumber});
+  const {pageNumber, keyword} = useParams();
+  const { data, isLoading, error } = useGetProductsQuery({pageNumber, keyword});
   return (
     <>
-      <h2>Latest Products</h2>
+    <Meta />
+      {!keyword && <ProductCarousel />}
+      {keyword ? <h2>Search Products</h2> : <h2>Latest Products</h2>}
       {isLoading ? (
         <h6>Loading...</h6>
       ) : error ? (
@@ -26,7 +30,7 @@ const HomePage = () => {
             </Col>
           ))}
         </Row>
-        <Paginate pageNumber={data.pageNumber} pages={data.pages} />
+        <Paginate pageNumber={data.pageNumber} pages={data.pages} keyword={keyword ? keyword : ""}/>
         </>
       )}
     </>

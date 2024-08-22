@@ -19,6 +19,7 @@ import {
 } from "../slices/productSlice";
 import Message from "../components/Message";
 import { toast } from "react-toastify";
+import Meta from "../components/Meta";
 
 const ProductPage = () => {
   const [qty, setQty] = useState(1);
@@ -67,6 +68,7 @@ const ProductPage = () => {
         <Message variant="danger">{error.data.error}</Message>
       ) : (
         <>
+        <Meta title={product.name} description={product.description}/>
           <Row>
             <Col md={5}>
               <Image src={String(product.image)} fluid />
