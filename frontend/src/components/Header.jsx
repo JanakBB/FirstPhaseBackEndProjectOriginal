@@ -31,7 +31,7 @@ const Header = () => {
     <Navbar variant="dark" bg="dark" expand="md" collapseOnSelect>
       <Container>
         <NavLink to="/" className="navbar-brand">
-          <img src={logo} alt="logo" /> Paloma
+          <img src={logo} alt="logo" /> Bond
         </NavLink>
         <Navbar.Toggle aria-controls="navbar" />
         <Navbar.Collapse id="navbar">
